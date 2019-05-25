@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "510721453630",
+    "firebase_url": "https://crimescoop-63ea6.firebaseio.com",
+    "project_id": "crimescoop-63ea6",
+    "storage_bucket": "crimescoop-63ea6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510721453630:android:3dec0d7fad86aed6",
+        "android_client_info": {
+          "package_name": "com.crimescoop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510721453630-l8smgcbbi35b7hpc05uujf853kj64d88.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crimescoop",
+            "certificate_hash": "d484072793a461e1563081b7364efef4a7d156cd"
+          }
+        },
+        {
+          "client_id": "510721453630-j6vc3lsq6gupes7ij7vo8d4f5aq3dkli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOOkwo1n0318AeTMkqLNrtx3rEwGz1gAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510721453630-j6vc3lsq6gupes7ij7vo8d4f5aq3dkli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
