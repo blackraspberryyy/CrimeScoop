@@ -1,4 +1,6 @@
+import React, { Component } from 'react'
 import { createSwitchNavigator, createAppContainer } from 'react-navigation'
+import { Root } from "native-base";
 import Loading from './app/pages/Loading'
 import Login from './app/pages/Login'
 import Welcome from './app/pages/Welcome'
@@ -20,5 +22,14 @@ const navigationOptions = {
 }
 
 const AppNavigator = createSwitchNavigator(screens, navigationOptions)
+const AppContainer = createAppContainer(AppNavigator)
 
-export default createAppContainer(AppNavigator)
+export default class App extends Component {
+  render() {
+    return (
+      <Root>
+        <AppContainer />
+      </Root>
+    );
+  }
+}

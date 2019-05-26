@@ -25,16 +25,18 @@ export default class Welcome extends Component {
         <Button
           style={styles.signin}
           onPress={this.login}
+          rounded
           block
         >
           <Text>Login</Text>
         </Button>
-        <View style={{ marginTop: 72 }}>
+        <View style={{ marginTop: 88 }}>
           <Text style={misc.greyText}>Haven't created an account yet?</Text>
           <Button
             style={styles.signup}
             light
             block
+            rounded
           >
             <Text>Sign Up to CrimeScoop</Text>
           </Button>
@@ -48,7 +50,7 @@ export default class Welcome extends Component {
 const styles = StyleSheet.create({
   signin: {
     marginTop: 24,
-    marginHorizontal: 32,
+    marginHorizontal: 64,
     backgroundColor: '#4169E1'
   },
   signup: {
