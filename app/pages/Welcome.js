@@ -9,6 +9,10 @@ export default class Welcome extends Component {
     this.state = {};
   }
 
+  login = () => {
+    this.props.navigation.navigate("Login")
+  }
+
   render() {
     const logoUrl="../assets/CrimeScoop/logo.png"
     return (
@@ -20,6 +24,7 @@ export default class Welcome extends Component {
         />
         <Button
           style={styles.signin}
+          onPress={this.login}
           block
         >
           <Text>Login</Text>
@@ -28,10 +33,10 @@ export default class Welcome extends Component {
           <Text style={misc.greyText}>Haven't created an account yet?</Text>
           <Button
             style={styles.signup}
-            bordered
+            light
             block
           >
-            <Text style={misc.accentText}>Sign Up to CrimeScoop</Text>
+            <Text>Sign Up to CrimeScoop</Text>
           </Button>
         </View>
       </Container>
@@ -47,7 +52,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4169E1'
   },
   signup: {
-    marginTop: 8,
-    backgroundColor: '#FFF'
+    marginTop: 8
   }
 })

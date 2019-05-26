@@ -15,15 +15,15 @@ export default class Loading extends Component {
       firebase.auth().onAuthStateChanged(user => {
         this.props.navigation.navigate(user ? 'Dashboard' : 'Welcome')
       })
-    }, 1000)
+    }, 300)
   }
 
   render() {
-    const logoUrl="../assets/CrimeScoop/logo.png"
+    const logoUrl="../assets/CrimeScoop/icon.png"
     return (
         <View style={ misc.container }>
           <Thumbnail 
-            style={ {width: 300} }
+            style={ {width: 150, height: 50} }
             source={ require(logoUrl) }
           />
           <Spinner color="#4169e1"/>
