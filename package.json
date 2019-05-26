@@ -11,6 +11,7 @@
     "native-base": "^2.12.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
+    "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.2.1",
     "react-navigation": "^3.11.0"
   },
@@ -24,5 +25,10 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
   }
 }

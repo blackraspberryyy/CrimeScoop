@@ -59,6 +59,9 @@
 		A33CDBA4B0EA44F8A026432D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0A15A7BFABE43799EAE1F99 /* Zocial.ttf */; };
 		F59C119F347A4562BA08336D /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D639BB7626D4E10B5B5447B /* libRNGestureHandler.a */; };
 		0445F0C5C12843FE889A43A9 /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8690BBC1FC094175A69B0422 /* libRNGestureHandler-tvOS.a */; };
+		73E2465267DF48E7BF0B5422 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFBC064C63546D4AFD390F8 /* libRNFirebase.a */; };
+		06A454945BC0479BB654EC94 /* Catamaran-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3416E24D69447D79E000001 /* Catamaran-ExtraBold.ttf */; };
+		5FE23DD987FE4E4A927DBCF6 /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E0D914FC864EAB800F6DFA /* libRNReanimated.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -387,6 +390,11 @@
 		94770669B11942C69E06ACD5 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; name = "RNGestureHandler.xcodeproj"; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		0D639BB7626D4E10B5B5447B /* libRNGestureHandler.a */ = {isa = PBXFileReference; name = "libRNGestureHandler.a"; path = "libRNGestureHandler.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		8690BBC1FC094175A69B0422 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; name = "libRNGestureHandler-tvOS.a"; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		97A2533008C64CABA2C23DA3 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; name = "RNFirebase.xcodeproj"; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		BEFBC064C63546D4AFD390F8 /* libRNFirebase.a */ = {isa = PBXFileReference; name = "libRNFirebase.a"; path = "libRNFirebase.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D3416E24D69447D79E000001 /* Catamaran-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Catamaran-ExtraBold.ttf"; path = "../assets/fonts/Catamaran-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		05B97111C2D74E55BC6F6BCA /* RNReanimated.xcodeproj */ = {isa = PBXFileReference; name = "RNReanimated.xcodeproj"; path = "../node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		22E0D914FC864EAB800F6DFA /* libRNReanimated.a */ = {isa = PBXFileReference; name = "libRNReanimated.a"; path = "libRNReanimated.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +424,8 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				F59C119F347A4562BA08336D /* libRNGestureHandler.a in Frameworks */,
+				73E2465267DF48E7BF0B5422 /* libRNFirebase.a in Frameworks */,
+				5FE23DD987FE4E4A927DBCF6 /* libRNReanimated.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,6 +617,8 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				94770669B11942C69E06ACD5 /* RNGestureHandler.xcodeproj */,
+				97A2533008C64CABA2C23DA3 /* RNFirebase.xcodeproj */,
+				05B97111C2D74E55BC6F6BCA /* RNReanimated.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -676,6 +688,7 @@
 				FDBC45F50B3B48C1A7C5028C /* rubicon-icon-font.ttf */,
 				9FC8DF41DF4041058BDBF652 /* SimpleLineIcons.ttf */,
 				A0A15A7BFABE43799EAE1F99 /* Zocial.ttf */,
+				D3416E24D69447D79E000001 /* Catamaran-ExtraBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1145,6 +1158,7 @@
 				E0368B070F7247F6A797723F /* rubicon-icon-font.ttf in Resources */,
 				363DB9DAA11D4DBDB4441A4B /* SimpleLineIcons.ttf in Resources */,
 				A33CDBA4B0EA44F8A026432D /* Zocial.ttf in Resources */,
+				06A454945BC0479BB654EC94 /* Catamaran-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1281,10 +1295,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Debug;
@@ -1308,10 +1326,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Release;
@@ -1335,6 +1357,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Debug;
@@ -1357,6 +1381,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Release;
@@ -1388,10 +1414,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Debug;
@@ -1423,10 +1453,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Release;
@@ -1457,10 +1491,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Debug;
@@ -1491,10 +1529,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
+					"$(SRCROOT)\..\node_modules\react-native-reanimated\ios/**",
 				);
 			};
 			name = Release;
