@@ -20,9 +20,16 @@ export default class SignUp extends Component {
   }
 
   handleSignUp = () => {
-    // check if email is valid
-    // check if confPasword is equal to password
-    // sanitize fname and lname
+    if (!validator.isEmail(this.state.email)){
+      showToast('Email is invalid', 'danger')
+      return
+    }
+
+    if (this.state.confPassword != this.state.password){
+      showToast('Password and Confirm Password does not match', 'danger')
+      return
+    }
+    //TODO: sanitize fname and lname
     
     firebase
       .auth()
@@ -32,6 +39,7 @@ export default class SignUp extends Component {
         let mes = getFirebaseSignInErrorMessage(error.code)
         showToast(mes, 'danger')
       })
+
     // then save to database
   }
 
