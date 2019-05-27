@@ -1,42 +1,49 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Text, Toast } from 'native-base';
+import validator from 'validator';
 import firebase from 'react-native-firebase'
 import MainHeader from '../components/Main/Header';
-import misc from '../styles/misc'
+import getFirebaseErrorMessage from '../tools/getFirebaseErrorMessage';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: ''
     }
   }
 
+
+  showDangerToast = message => {
+    Toast.show({
+      text: message,
+      buttonText: 'Dismiss',
+      type: 'danger',
+      duration: 2000,
+      textStyle: { fontSize: 12 }
+
+    })
+  }
+
   handleLogin = () => {
-    const { username, password } = this.state
-    if (username && password){
-      firebase
-      .auth()
-      .signInWithEmailAndPassword(username, password)
-      .then(() => this.props.navigation.navigate('Dashboard'))
-      .catch(error => {
-        console.log(error)
-        Toast.show({
-          text: error.message,
-          buttonText: 'Dismiss',
-          type: 'danger',
-          textStyle: { fontSize: 12 }
-        })
-      })
+    const { email, password } = this.state
+    if (email && password){
+      if (validator.isEmail(email)){
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(() => this.props.navigation.navigate('Dashboard'))
+          .catch(error => {
+            let mes = getFirebaseErrorMessage(error.code)
+            this.showDangerToast(mes)
+          })
+      }else {
+        this.showDangerToast("Email is invalid")
+      }
     }else{
-      Toast.show({
-        text: "Please provide needed credentials.",
-        buttonText: 'Dismiss',
-        type: 'danger',
-        textStyle: { fontSize: 12 }
-      })
+      this.showDangerToast("Please provide needed credentials.")
     }
     
   }
@@ -59,9 +66,10 @@ export default class Login extends Component {
             <Item rounded style={styles.input}>
               <Input
                 autoCapitalize="none"
-                placeholder='Username'
-                onChangeText={username => this.setState({ username })}
-                value={this.state.username}
+                placeholder='Email'
+                keyboardType='email-address'
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
               />
             </Item>
             <Item rounded style={styles.input}>
