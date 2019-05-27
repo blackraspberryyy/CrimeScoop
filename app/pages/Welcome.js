@@ -13,6 +13,10 @@ export default class Welcome extends Component {
     this.props.navigation.navigate("Login")
   }
 
+  signup = () => {
+    this.props.navigation.navigate("SignUp")
+  }
+
   render() {
     const logoUrl="../assets/CrimeScoop/logo.png"
     return (
@@ -34,6 +38,7 @@ export default class Welcome extends Component {
           <Text style={misc.greyText}>Haven't created an account yet?</Text>
           <Button
             style={styles.signup}
+            onPress={this.signup}
             light
             block
             rounded
@@ -50,8 +55,7 @@ export default class Welcome extends Component {
 const styles = StyleSheet.create({
   signin: {
     marginTop: 24,
-    marginHorizontal: 64,
-    backgroundColor: '#4169E1'
+    marginHorizontal: 64
   },
   signup: {
     marginTop: 8

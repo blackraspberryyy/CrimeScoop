@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Content, Form, Item, Input, Button, Text, Toast } from 'native-base';
+import { Container, Content, Form, Item, Input, Button, Text } from 'native-base';
 import validator from 'validator';
-import firebase from 'react-native-firebase'
+import firebase from 'react-native-firebase';
 import MainHeader from '../components/Main/Header';
-import getFirebaseErrorMessage from '../tools/getFirebaseErrorMessage';
+import getFirebaseSignInErrorMessage from '../tools/getFirebaseSignInErrorMessage';
+import showToast from '../tools/showToast';
 
 export default class Login extends Component {
   constructor(props) {
@@ -13,18 +14,6 @@ export default class Login extends Component {
       email: '',
       password: ''
     }
-  }
-
-
-  showDangerToast = message => {
-    Toast.show({
-      text: message,
-      buttonText: 'Dismiss',
-      type: 'danger',
-      duration: 2000,
-      textStyle: { fontSize: 12 }
-
-    })
   }
 
   handleLogin = () => {
@@ -36,14 +25,14 @@ export default class Login extends Component {
           .signInWithEmailAndPassword(email, password)
           .then(() => this.props.navigation.navigate('Dashboard'))
           .catch(error => {
-            let mes = getFirebaseErrorMessage(error.code)
-            this.showDangerToast(mes)
+            let mes = getFirebaseSignInErrorMessage(error.code)
+            showToast(mes, 'danger')
           })
       }else {
-        this.showDangerToast("Email is invalid")
+        showToast('Email is invalid', 'danger')
       }
     }else{
-      this.showDangerToast("Please provide needed credentials.")
+      showToast('Please provide needed credentials.', 'danger')
     }
     
   }
@@ -54,6 +43,9 @@ export default class Login extends Component {
   }
 
   render() {
+    const s = this.state
+    let form = s.email && validator.isEmail(s.email) && s.password
+
     return (
       <Container>
         <MainHeader 
@@ -84,6 +76,7 @@ export default class Login extends Component {
             <Button
               onPress={ this.handleLogin }
               style={styles.button}
+              disabled={ !form }
               rounded
               block
             >
@@ -108,7 +101,6 @@ const styles = StyleSheet.create({
   },
   button: { 
     marginTop: 24,
-    marginHorizontal: 64,
-    backgroundColor: '#4169E1'
+    marginHorizontal: 64
   }
 })

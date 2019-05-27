@@ -1,19 +1,21 @@
 import React, { Component } from 'react'
 import { createSwitchNavigator, createAppContainer } from 'react-navigation'
-import { Root } from "native-base";
+import { StyleProvider, Root } from "native-base";
+import getTheme from './native-base-theme/components';
+import platform from './native-base-theme/variables/platform';
 import Loading from './app/pages/Loading'
 import Login from './app/pages/Login'
 import Welcome from './app/pages/Welcome'
 import Dashboard from './app/pages/Dashboard'
-/* import SignUp from './app/pages/SignUp'
-*/
+import SignUp from './app/pages/SignUp'
+
 
 const screens = {
   Loading,
   Login,
   Welcome,
   Dashboard,
-  /*   SignUp,  */
+  SignUp, 
 }
 
 const navigationOptions = { 
@@ -27,9 +29,11 @@ const AppContainer = createAppContainer(AppNavigator)
 export default class App extends Component {
   render() {
     return (
-      <Root>
-        <AppContainer />
-      </Root>
+      <StyleProvider style={getTheme(platform)}>
+          <Root>
+          <AppContainer />
+        </Root>
+      </StyleProvider>
     );
   }
 }
