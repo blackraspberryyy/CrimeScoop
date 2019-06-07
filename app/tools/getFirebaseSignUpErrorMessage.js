@@ -16,5 +16,5 @@ export default function (code){
 
   let error = errorCodes.find(e => e.code == code)
 
-  return error ? error.message : 'Cannot create account. Try again later.'
+  return error ? error.message : 'Cannot create account.'
 }

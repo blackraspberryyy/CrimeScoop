@@ -4,8 +4,8 @@ import firebase from 'react-native-firebase';
 import { Container, Content, Form, Item, Input, Button, Text, View} from 'native-base';
 import validator from 'validator';
 import MainHeader from '../components/Main/Header';
-import misc from '../styles/misc';
 import showToast from '../tools/showToast';
+import getFirebaseSignUpErrorMessage from '../tools/getFirebaseSignUpErrorMessage'
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -29,18 +29,31 @@ export default class SignUp extends Component {
       showToast('Password and Confirm Password does not match', 'danger')
       return
     }
-    //TODO: sanitize fname and lname
-    
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('Dashboard'))
+      .then(user => {
+        console.warn(user)
+        this.insertUserToAuth(user)
+      })
       .catch(error => {
-        let mes = getFirebaseSignInErrorMessage(error.code)
+        let mes = getFirebaseSignUpErrorMessage(error.code)
         showToast(mes, 'danger')
       })
+  }
 
-    // then save to database
+  insertUserToAuth(user){
+    const Users = firebase.firestore().collection('Users')
+    Users
+      .add({
+        uid: user.uid,
+        fname: this.state.fname,
+        lname: this.state.lname
+      })
+      .then(() => {
+        this.props.navigation.navigate('Dashboard')
+      })
   }
 
   goBack(){
