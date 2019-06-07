@@ -52,7 +52,7 @@ export default class SignUp extends Component {
         lname: this.state.lname
       })
       .then(() => {
-        this.props.navigation.navigate('Dashboard')
+        this.props.navigation.navigate('AppDrawer')
       })
   }
 

@@ -9,12 +9,17 @@ export default class MainHeader extends Component {
   }
 
   render() { 
+    let buttonAction = this.props.backIcon ? this.props.onButtonPress : () => {
+      console.log('Hello')
+      this.props.navigation.openDrawer()
+    }
+
     return (
       <Header transparent>
         <Left>
           <Button
             transparent
-            onPress={this.props.onButtonPress}
+            onPress={buttonAction}
           >
             <Icon 
               name={!this.props.backIcon ? 'menu' : 'arrow-back'}

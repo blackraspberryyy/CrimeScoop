@@ -23,7 +23,7 @@ export default class Login extends Component {
         firebase
           .auth()
           .signInWithEmailAndPassword(email, password)
-          .then(() => this.props.navigation.navigate('Dashboard'))
+          .then(() => this.props.navigation.navigate('AppDrawer'))
           .catch(error => {
             let mes = getFirebaseSignInErrorMessage(error.code)
             showToast(mes, 'danger')

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import firebase from 'react-native-firebase'
+import MainHeader from '../components/Main/Header';
+import {Container, Content} from 'native-base'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -18,10 +20,15 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <View>
-        <Text>HEY</Text>
-        <Text>{this.state.user_id}</Text>
-      </View>
+      <Container>
+        <MainHeader 
+          navigation={this.props.navigation}
+          title="Dashboard"
+        />
+        <Content>
+          <Text>Hello There</Text>
+        </Content>
+      </Container>
     );
   }
 }

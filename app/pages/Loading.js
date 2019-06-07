@@ -13,7 +13,7 @@ export default class Loading extends Component {
   componentDidMount() {
     setTimeout(() => {
       firebase.auth().onAuthStateChanged(user => {
-        this.props.navigation.navigate(user ? 'Dashboard' : 'Welcome')
+        this.props.navigation.navigate(user ? 'AppDrawer' : 'Welcome')
       })
     }, 300)
   }
