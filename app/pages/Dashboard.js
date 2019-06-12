@@ -5,6 +5,7 @@ import MainHeader from '../components/Main/Header';
 import {Container, Content} from 'native-base'
 
 export default class Dashboard extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -13,8 +14,13 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount(){
+    this._isMounted = true;
     firebase.auth().onAuthStateChanged(user => {
-      this.setState(() => ({user_id: user.uid}))
+      if(user && this._isMounted){
+        this.setState(() => ({user_id: user.uid}))
+      }else{
+        this.props.navigation.navigate('Loading')
+      }
     })
   }
 
@@ -30,5 +36,9 @@ export default class Dashboard extends Component {
         </Content>
       </Container>
     );
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 }
