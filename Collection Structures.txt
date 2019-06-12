@@ -1,0 +1,69 @@
+Users: {
+  fname: '',
+  lname: '',
+  phone: '',
+  address: '', //where officers are assigned
+  avatar: '',
+  email: '',
+  role: 'reporter'
+},
+
+Users: {
+  fname: '',
+  lname: '',
+  phone: '',
+  address: '', //where officers are assigned
+  avatar: '',
+  email: '',
+  role: 'brgy_officer', //can be reporter, brgy_officer, police_officer, superadmin
+  brgys: {
+    name: '',
+    location: '',
+    
+  }
+},
+
+Users: {
+  fname: '',
+  lname: '',
+  phone: '',
+  address: '', //where officers are assigned
+  avatar: '',
+  email: '',
+  role: 'police_officer', //can be reporter, brgy_officer, police_officer, superadmin
+  brgys: [
+    {
+      name: '',
+      location: ''
+    },
+    {
+      name: '',
+      location: ''
+    }
+  ]
+},
+
+Users: {
+  fname: '',
+  lname: '',
+  phone: '',
+  address: '', //where officers are assigned
+  avatar: '',
+  email: '',
+  role: 'superadmin', //can be reporter, brgy_officer, police_officer, superadmin
+  
+},
+
+Reports: {
+  type: '',
+  location: '', //location of the crime
+  datetime: '',
+  upload: '',
+  details: '', //optional. Additional details to the crime
+  reported_by: '',
+  brgy_officer: '',
+  police_officer: ''
+}
+
+
+

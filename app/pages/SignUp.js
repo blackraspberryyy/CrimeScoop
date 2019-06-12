@@ -34,7 +34,6 @@ export default class SignUp extends Component {
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => {
-        console.warn(user)
         this.insertUserToAuth(user)
       })
       .catch(error => {
@@ -45,20 +44,23 @@ export default class SignUp extends Component {
 
   insertUserToAuth(user){
     const Users = firebase.firestore().collection('Users')
+    const u = {
+      uid: user.uid,
+      fname: this.state.fname,
+      lname: this.state.lname,
+      role: 'reporter'
+    }
+
     Users
-      .add({
-        uid: user.uid,
-        fname: this.state.fname,
-        lname: this.state.lname
-      })
+      .add(u)
       .then(() => {
         this.props.navigation.navigate('AppDrawer')
       })
   }
 
   goBack(){
-    const { navigate } = this.props.navigation;
-    navigate("Loading")
+    const { goBack } = this.props.navigation;
+    goBack()
   }
 
   render() {

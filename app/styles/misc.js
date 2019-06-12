@@ -22,5 +22,9 @@ export default styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  devBorder: {
+    borderWidth: 1,
+    borderColor: '#f00'
   }
 })

@@ -38,8 +38,8 @@ export default class Login extends Component {
   }
 
   goBack(){
-    const { navigate } = this.props.navigation;
-    navigate("Loading")
+    const { goBack } = this.props.navigation;
+    goBack()
   }
 
   render() {

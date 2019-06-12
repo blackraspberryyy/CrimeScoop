@@ -23,7 +23,7 @@ export default class Welcome extends Component {
       <Container style={misc.container}>
         <H2>Welcome to</H2>
         <Thumbnail 
-          style={ {width: 400, height: 80} }
+          style={ {width: 300, height: 80} }
           source={ require(logoUrl) }
         />
         <Button

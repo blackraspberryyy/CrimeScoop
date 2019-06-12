@@ -9,12 +9,14 @@
     "clean-gradle": "cd android/ && gradlew clean"
   },
   "dependencies": {
+    "lodash": "^4.17.11",
     "native-base": "^2.12.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
     "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.2.1",
     "react-navigation": "^3.11.0",
+    "react-navigation-slide-from-right-transition": "^1.0.4",
     "validator": "^11.0.0"
   },
   "devDependencies": {

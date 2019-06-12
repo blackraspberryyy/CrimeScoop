@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
-import { createSwitchNavigator, createAppContainer, createDrawerNavigator, DrawerItems } from 'react-navigation'
+import { createStackNavigator, createAppContainer, createDrawerNavigator, DrawerItems } from 'react-navigation'
 import { StyleProvider, Root, Container, Header, Content, Left, Right, Button, Icon, Body, Title } from "native-base";
+import getSlideFromRightTransition from 'react-navigation-slide-from-right-transition';
 import getTheme from './native-base-theme/components';
 import platform from './native-base-theme/variables/platform';
+import SideBar from "./app/components/Nav/SideBar.js";
 import Loading from './app/pages/Loading'
 import Login from './app/pages/Login'
 import Welcome from './app/pages/Welcome'
 import Dashboard from './app/pages/Dashboard'
 import SignUp from './app/pages/SignUp'
-import misc from './app/styles/misc'
-
+import navRoutes from './navRoutes'
 /*
 == Navigator Tree ==
 - Main (SwitchNavigator)
@@ -23,30 +24,7 @@ import misc from './app/styles/misc'
     - Logout
 */
 
-const CustomDrawerContent = props => (
-  <Container>
-    <Header transparent>
-      <Left>
-        <Button
-          transparent
-          onPress={() => props.navigation.closeDrawer()}
-        >
-          <Icon 
-            name={'arrow-back'}
-            style={misc.blackText}
-          />
-        </Button>
-      </Left>
-      <Body>
-        <Title style={[misc.catamaran, misc.blackText]}>Navigation</Title>
-      </Body>
-      <Right />
-    </Header>
-    <Content>
-      <DrawerItems {...props}/>
-    </Content>
-  </Container>
-)
+const CustomDrawerContent = props => <SideBar {...props} />
 
 const nav = {
   Dashboard
@@ -69,10 +47,11 @@ const screens = {
 
 const stackOptions = { 
   headerMode: 'none', 
-  initialRouteName: 'Loading'
+  initialRouteName: 'Loading',
+  transitionConfig: getSlideFromRightTransition
 }
 
-const AppNavigator = createSwitchNavigator(screens, stackOptions)
+const AppNavigator = createStackNavigator(screens, stackOptions)
 const AppContainer = createAppContainer(AppNavigator)
 
 export default class App extends Component {
