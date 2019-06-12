@@ -1,41 +1,28 @@
 import React, { Component } from 'react'
-import { createStackNavigator, createAppContainer, createDrawerNavigator, DrawerItems } from 'react-navigation'
-import { StyleProvider, Root, Container, Header, Content, Left, Right, Button, Icon, Body, Title } from "native-base";
+import { createStackNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation'
+import { StyleProvider, Root } from "native-base";
 import getSlideFromRightTransition from 'react-navigation-slide-from-right-transition';
 import getTheme from './native-base-theme/components';
 import platform from './native-base-theme/variables/platform';
+import routes from './navRoutes'
 import SideBar from "./app/components/Nav/SideBar.js";
+import Dashboard from './app/pages/Dashboard'
 import Loading from './app/pages/Loading'
 import Login from './app/pages/Login'
 import Welcome from './app/pages/Welcome'
-import Dashboard from './app/pages/Dashboard'
 import SignUp from './app/pages/SignUp'
-import navRoutes from './navRoutes'
-/*
-== Navigator Tree ==
-- Main (SwitchNavigator)
-  - Loading
-  - Welcome
-  - Sign In
-  - Sign Up
-  - Sidebar (DrawerNavigator)
-    - Dashboard
-    - .. some navs
-    - Logout
-*/
+import getComponentsFromRoutes from './app/tools/getComponentsFromRoutes';
 
 const CustomDrawerContent = props => <SideBar {...props} />
 
-const nav = {
-  Dashboard
-}
+const nav2 = getComponentsFromRoutes(routes)
 
 const drawerOptions = {
   initialRouteName: 'Dashboard',
   contentComponent: CustomDrawerContent
 }
 
-const AppDrawer = createDrawerNavigator(nav, drawerOptions, drawerOptions)
+const AppDrawer = createDrawerNavigator(nav2, drawerOptions)
 
 const screens = {
   Loading,
