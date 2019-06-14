@@ -1,32 +1,67 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Alert, Text, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase'
 import MainHeader from '../components/Main/Header';
-import {Container, Content} from 'native-base'
+import { Container, Content, Button } from 'native-base';
+import misc from '../styles/misc'
+
 
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_id: ''
+      user_id: '',
+      location: null,
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
-      this.setState(() => ({user_id: user.uid}))
+      this.setState(() => ({ user_id: user.uid }))
     })
+
   }
+
+  onEnableLocationPress() {
+    LocationSwitch.enableLocationService(1000, true,
+      () => { this.setState({ locationEnabled: true }); },
+      () => { this.setState({ locationEnabled: false }); },
+    );
+  }
+
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const location = JSON.stringify(position);
+        this.setState({ location });
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+    );
+  };
+
 
   render() {
     return (
       <Container>
-        <MainHeader 
+        <MainHeader
           navigation={this.props.navigation}
           title="Dashboard"
         />
         <Content>
-          <Text>Hello There</Text>
+          <View style={misc.container}>
+            {/* <Text>Location: {this.state.location}</Text> */}
+            <Text style={styles.dashboardHeader}>Are you in danger?</Text>
+            {/* <TouchableOpacity onPress={this.findCoordinates}>
+              <Text>Find My Coords?</Text>
+            </TouchableOpacity> */}
+            <View style={{ marginTop: 30 }}>
+              <Button large primary style={{ width: 150, justifyContent: 'center' }}>
+                <Text style={{ color: 'white', fontSize: 25 }}>Report</Text>
+              </Button>
+            </View>
+          </View>
+        
         </Content>
       </Container>
     );
