@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
+import GeoJsonGeometriesLookup from 'geojson-geometries-lookup'
 import { Container, H2, Thumbnail, Button, Text } from 'native-base';
-import firebase from 'react-native-firebase'
 import misc from '../styles/misc'
+import { isArray } from 'lodash';
 
 export default class Welcome extends Component {
   constructor(props) {
@@ -10,28 +11,19 @@ export default class Welcome extends Component {
     this.state = {};
   }
 
-  uploadBrgy = () => {
-    const barangays = firebase.firestore().collection("barangays")
-    console.log('getting json..')
-    let brgys = require('../../sample.json')
-    console.log(brgys.type)
+  // DO NOT REMOVE THIS PRECIOUS CODE!
+  /* uploadBrgy = () => {
+    const geojson = require('../../Barangays.json')
+    
+    const glookup = new GeoJsonGeometriesLookup(geojson, {ignorePoints: true, ignoreLines: true})
 
-    let brgyFeatures = brgys.features
+    const point = {type: "Point", coordinates: [120.97364544868468, 14.685320127468701]};
+    let tmp = glookup.getContainers(point, {ignorePoints: true, ignoreLines: true})
 
-    brgyFeatures.forEach(brgy => {
-      console.log(brgy)
-      barangays.add({
-        type: brgy.type,
-        properties: brgy.properties,
-        geometry: JSON.stringify(brgy.geometry)
-      }).then(docRef => {
-        console.log("Wala ba talaga?")
-        console.log("Document written with ID: ", docRef.id);
-      }).catch(error => {
-        console.error("Error adding document: ", error);
-      });
-  });
-  }
+    tmp.features.forEach(t => {
+      console.log(t.properties.NAME_3)
+    })
+  } */
 
   login = () => {
     this.props.navigation.navigate("Login")
