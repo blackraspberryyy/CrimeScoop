@@ -1,12 +1,36 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Container, H2, Thumbnail, Button, Text } from 'native-base';
+import firebase from 'react-native-firebase'
 import misc from '../styles/misc'
 
 export default class Welcome extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+
+  uploadBrgy = () => {
+    const barangays = firebase.firestore().collection("barangays")
+    console.log('getting json..')
+    let brgys = require('../../sample.json')
+    console.log(brgys.type)
+
+    let brgyFeatures = brgys.features
+
+    brgyFeatures.forEach(brgy => {
+      console.log(brgy)
+      barangays.add({
+        type: brgy.type,
+        properties: brgy.properties,
+        geometry: JSON.stringify(brgy.geometry)
+      }).then(docRef => {
+        console.log("Wala ba talaga?")
+        console.log("Document written with ID: ", docRef.id);
+      }).catch(error => {
+        console.error("Error adding document: ", error);
+      });
+  });
   }
 
   login = () => {
@@ -29,10 +53,9 @@ export default class Welcome extends Component {
         <Button
           style={styles.signin}
           onPress={this.login}
-          rounded
           block
         >
-          <Text>Login</Text>
+          <H2 style={[misc.catamaran, misc.whiteText]}>Login</H2>
         </Button>
         <View style={{ marginTop: 88 }}>
           <Text style={misc.greyText}>Haven't created an account yet?</Text>
@@ -41,10 +64,16 @@ export default class Welcome extends Component {
             onPress={this.signup}
             light
             block
-            rounded
           >
             <Text>Sign Up to CrimeScoop</Text>
           </Button>
+          {/* <Button
+            style={styles.signup}
+            onPress={this.uploadBrgy}
+            block
+          >
+            <Text>Upload brgys</Text>
+          </Button> */}
         </View>
       </Container>
     );
@@ -55,7 +84,9 @@ export default class Welcome extends Component {
 const styles = StyleSheet.create({
   signin: {
     marginTop: 24,
-    marginHorizontal: 64
+    marginHorizontal: 64,
+    paddingTop: 28,
+    paddingBottom: 16
   },
   signup: {
     marginTop: 8
