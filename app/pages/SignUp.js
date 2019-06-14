@@ -33,8 +33,8 @@ export default class SignUp extends Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(user => {
-        this.insertUserToAuth(user)
+      .then(() => {
+        this.insertUserToAuth()
       })
       .catch(error => {
         let mes = getFirebaseSignUpErrorMessage(error.code)
@@ -42,20 +42,31 @@ export default class SignUp extends Component {
       })
   }
 
-  insertUserToAuth(user){
-    const Users = firebase.firestore().collection('Users')
-    const u = {
-      uid: user.uid,
-      fname: this.state.fname,
-      lname: this.state.lname,
-      role: 'reporter'
-    }
+  insertUserToAuth(){
+    firebase.auth().onAuthStateChanged(user => {
+      if(user){
+        const Users = firebase.firestore().collection('Users')
+        const u = {
+          uid: user.uid,
+          fname: this.state.fname,
+          lname: this.state.lname,
+          role: 'reporter'
+        }
 
-    Users
-      .add(u)
-      .then(() => {
-        this.props.navigation.navigate('AppDrawer')
-      })
+        Users
+          .add(u)
+          .then(() => {
+            this.props.navigation.navigate('AppDrawer')
+          })
+          .catch(error => {
+            showToast(error, 'danger')
+          })
+      }else{
+        showToast('Something Unexpected Happened :C', 'danger')
+      }
+    })
+
+    
   }
 
   goBack(){
@@ -133,7 +144,6 @@ export default class SignUp extends Component {
               onPress={ this.handleSignUp }
               style={styles.button}
               disabled={ !form }
-              rounded
               block
             >
               <Text>Sign up</Text>

@@ -77,7 +77,6 @@ export default class Login extends Component {
               onPress={ this.handleLogin }
               style={styles.button}
               disabled={ !form }
-              rounded
               block
             >
               <Text>Login</Text>

@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { startCase } from 'lodash'
 import { FlatList, StyleSheet } from "react-native";
+import { startCase } from 'lodash'
 import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, H3 } from "native-base";
 import firebase from 'react-native-firebase'
 import navRoutes from '../../../navRoutes'
 import misc from '../../styles/misc'
+import showToast from "../../tools/showToast";
 
 export default class SideBar extends Component {
+  _isMounted = false;
+
   constructor(props){
     super(props);
     this.state = {
@@ -19,17 +22,34 @@ export default class SideBar extends Component {
     };
 
   }
+
+  signOutUser = async () => {
+    try {
+      await firebase.auth().signOut();
+      showToast("Successfully Logout", "success")
+      this.props.navigation.navigate('Login');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   componentDidMount(){
+    this._isMounted = true;
     firebase
       .auth()
       .onAuthStateChanged(u => {
-        this.setState(() => ({user_id: u.uid}))
-        this.setUser()
+        if (u && this._isMounted){
+          this.setUser(u)
+        }else{
+          this.props.navigation.navigate('Loading')
+        }
       })
   }
 
-  setUser(){
-    const uid = this.state.user_id
+  setUser(user){
+    this.setState(() => ({user_id: user.uid}))
+
+    const uid = user.uid
     const Users = firebase.firestore().collection("Users")
     const query = Users.where("uid", "==", uid)
 
@@ -37,16 +57,22 @@ export default class SideBar extends Component {
       .get()
       .then(querySnapshot => {
         if (querySnapshot.empty) {
+          showToast('No users found', 'danger')
         }else{
-          const doc = querySnapshot.docs[0]
-          this.setState(() => ({user: doc.data()}))
+          if(this._isMounted){
+            const doc = querySnapshot.docs[0]
+            this.setState(() => ({user: doc.data()}))
+  
+            const {user} = this.state
+            showToast('Welcome ' + startCase(user.fname + ' ' + user.lname) + '!', 'success')
+          }
         }
       })
       .catch(e => {console.error(e)})
   }
   
   render() {
-    const {user} = this.state
+    const { user } = this.state
     return (
       <Container>
         <Content>
@@ -60,6 +86,7 @@ export default class SideBar extends Component {
             data={navRoutes}
             renderItem={({item}) => 
             <ListItem
+              noBorder
               icon
               button
               onPress={() => {
@@ -77,11 +104,31 @@ export default class SideBar extends Component {
                 </Body>
                 
             </ListItem>
-            }
-          />
+            }/>
+            <ListItem
+              noBorder
+              icon
+              button
+              onPress={() => {
+                this.signOutUser()
+                this.props.navigation.navigate('Loading')
+              }}>
+                <Left>
+                  <Icon 
+                    name='log-out'
+                    style={misc.blackText}
+                  />
+                </Left>
+                <Body>
+                  <Text>Logout</Text>
+                </Body>
+            </ListItem>
         </Content>
       </Container>
     );
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 }
 
