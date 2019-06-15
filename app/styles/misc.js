@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native'
+import {
+  StyleSheet
+} from 'react-native'
 export default styles = StyleSheet.create({
   catamaran: {
     fontFamily: 'Catamaran-ExtraBold'
@@ -26,5 +28,12 @@ export default styles = StyleSheet.create({
   devBorder: {
     borderWidth: 1,
     borderColor: '#f00'
-  }
+  },
+  dashboardHeader: {
+    fontSize: 50,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textAlignVertical: 'bottom',
+    height: 400,
+  },
 })

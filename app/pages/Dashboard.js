@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { View, Alert, Text, TouchableOpacity } from 'react-native';
-import firebase from 'react-native-firebase'
+import firebase from 'react-native-firebase';
 import MainHeader from '../components/Main/Header';
 import { Container, Content, Button } from 'native-base';
-import misc from '../styles/misc'
+import misc from '../styles/misc';
+// import manifest from './manifest.json';
 
+// Retrieve Firebase Messaging object.
+// const messaging = firebase.messaging();
 
 export default class Dashboard extends Component {
   _isMounted = false;
@@ -16,23 +19,17 @@ export default class Dashboard extends Component {
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this._isMounted = true;
     firebase.auth().onAuthStateChanged(user => {
-      if(user && this._isMounted){
-        this.setState(() => ({user_id: user.uid}))
-      }else{
+      if (user && this._isMounted) {
+        this.setState(() => ({ user_id: user.uid }))
+      } else {
         this.props.navigation.navigate('Loading')
       }
     })
-
-  }
-
-  onEnableLocationPress() {
-    LocationSwitch.enableLocationService(1000, true,
-      () => { this.setState({ locationEnabled: true }); },
-      () => { this.setState({ locationEnabled: false }); },
-    );
+    // console.log(messaging);
+ 
   }
 
   findCoordinates = () => {
@@ -67,7 +64,7 @@ export default class Dashboard extends Component {
               </Button>
             </View>
           </View>
-        
+
         </Content>
       </Container>
     );
@@ -76,4 +73,5 @@ export default class Dashboard extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
+
 }
