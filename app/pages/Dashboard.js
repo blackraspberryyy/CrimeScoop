@@ -28,8 +28,6 @@ export default class Dashboard extends Component {
         this.props.navigation.navigate('Loading')
       }
     })
-    // console.log(messaging);
- 
   }
 
   findCoordinates = () => {
