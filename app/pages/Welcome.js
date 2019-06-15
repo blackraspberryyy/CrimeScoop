@@ -1,29 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import GeoJsonGeometriesLookup from 'geojson-geometries-lookup'
 import { Container, H2, Thumbnail, Button, Text } from 'native-base';
 import misc from '../styles/misc'
-import { isArray } from 'lodash';
 
 export default class Welcome extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  // DO NOT REMOVE THIS PRECIOUS CODE!
-  /* uploadBrgy = () => {
-    const geojson = require('../../Barangays.json')
-    
-    const glookup = new GeoJsonGeometriesLookup(geojson, {ignorePoints: true, ignoreLines: true})
-
-    const point = {type: "Point", coordinates: [120.97364544868468, 14.685320127468701]};
-    let tmp = glookup.getContainers(point, {ignorePoints: true, ignoreLines: true})
-
-    tmp.features.forEach(t => {
-      console.log(t.properties.NAME_3)
-    })
-  } */
 
   login = () => {
     this.props.navigation.navigate("Login")
@@ -59,13 +43,6 @@ export default class Welcome extends Component {
           >
             <Text>Sign Up to CrimeScoop</Text>
           </Button>
-          {/* <Button
-            style={styles.signup}
-            onPress={this.uploadBrgy}
-            block
-          >
-            <Text>Upload brgys</Text>
-          </Button> */}
         </View>
       </Container>
     );
