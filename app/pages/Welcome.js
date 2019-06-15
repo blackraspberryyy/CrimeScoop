@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Container, H2, Thumbnail, Button, Text } from 'native-base';
-import firebase from 'react-native-firebase'
 import misc from '../styles/misc'
 
 export default class Welcome extends Component {
@@ -10,6 +9,7 @@ export default class Welcome extends Component {
     this.state = {};
   }
 
+<<<<<<< HEAD
   // uploadBrgy = () => {
   //   const barangays = firebase.firestore().collection("barangays")
   //   console.log('getting json..')
@@ -33,6 +33,8 @@ export default class Welcome extends Component {
   // });
   // }
 
+=======
+>>>>>>> 091c957b4a6cc18b7fa23bc0d151991df6f6a601
   login = () => {
     this.props.navigation.navigate("Login")
   }
@@ -67,13 +69,6 @@ export default class Welcome extends Component {
           >
             <Text>Sign Up to CrimeScoop</Text>
           </Button>
-          {/* <Button
-            style={styles.signup}
-            onPress={this.uploadBrgy}
-            block
-          >
-            <Text>Upload brgys</Text>
-          </Button> */}
         </View>
       </Container>
     );

@@ -9,6 +9,7 @@
     "clean-gradle": "cd android/ && gradlew clean"
   },
   "dependencies": {
+    "geojson-geometries-lookup": "^0.3.0",
     "lodash": "^4.17.11",
     "native-base": "^2.12.1",
     "react": "16.8.3",
