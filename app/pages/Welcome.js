@@ -9,7 +9,6 @@ export default class Welcome extends Component {
     this.state = {};
   }
 
-<<<<<<< HEAD
   // uploadBrgy = () => {
   //   const barangays = firebase.firestore().collection("barangays")
   //   console.log('getting json..')
@@ -33,8 +32,6 @@ export default class Welcome extends Component {
   // });
   // }
 
-=======
->>>>>>> 091c957b4a6cc18b7fa23bc0d151991df6f6a601
   login = () => {
     this.props.navigation.navigate("Login")
   }
