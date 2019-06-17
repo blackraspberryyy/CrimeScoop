@@ -5,7 +5,7 @@ export default function(message, type) {
     text: message,
     buttonText: 'Dismiss',
     type: type ? type : undefined,
-    duration: 2000,
+    duration: 4000,
     textStyle: { fontSize: 12 }
   })
 }

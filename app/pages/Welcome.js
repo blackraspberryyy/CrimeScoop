@@ -9,29 +9,6 @@ export default class Welcome extends Component {
     this.state = {};
   }
 
-  // uploadBrgy = () => {
-  //   const barangays = firebase.firestore().collection("barangays")
-  //   console.log('getting json..')
-  //   let brgys = require('../../sample.json')
-  //   console.log(brgys.type)
-
-  //   let brgyFeatures = brgys.features
-
-  //   brgyFeatures.forEach(brgy => {
-  //     console.log(brgy)
-  //     barangays.add({
-  //       type: brgy.type,
-  //       properties: brgy.properties,
-  //       geometry: JSON.stringify(brgy.geometry)
-  //     }).then(docRef => {
-  //       console.log("Wala ba talaga?")
-  //       console.log("Document written with ID: ", docRef.id);
-  //     }).catch(error => {
-  //       console.error("Error adding document: ", error);
-  //     });
-  // });
-  // }
-
   login = () => {
     this.props.navigation.navigate("Login")
   }
