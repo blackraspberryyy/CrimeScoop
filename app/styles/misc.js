@@ -23,7 +23,8 @@ export default styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   devBorder: {
     borderWidth: 1,
@@ -36,4 +37,14 @@ export default styles = StyleSheet.create({
     textAlignVertical: 'bottom',
     height: 400,
   },
+  reportTypeButton: {
+    margin: 10,
+    width: '90%',
+    justifyContent: 'center',
+    height: '40%',
+  },
+  reportType: {
+    color: 'white',
+    fontSize: 25,
+  }
 })

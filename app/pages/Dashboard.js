@@ -58,7 +58,7 @@ export default class Dashboard extends Component {
             </TouchableOpacity> */}
             <View style={{ marginTop: 30 }}>
               <Button large primary style={{ width: 150, justifyContent: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 25 }}>Report</Text>
+                <Text style={misc.reportType}>Report</Text>
               </Button>
             </View>
           </View>
