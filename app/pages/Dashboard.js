@@ -52,12 +52,12 @@ export default class Dashboard extends Component {
         <Content>
           <View style={misc.container}>
             {/* <Text>Location: {this.state.location}</Text> */}
-            <Text style={styles.dashboardHeader}>Are you in danger?</Text>
+            <Text style={[misc.dashboardHeader,misc.catamaran]}>Are you in danger?</Text>
             {/* <TouchableOpacity onPress={this.findCoordinates}>
               <Text>Find My Coords?</Text>
             </TouchableOpacity> */}
             <View style={{ marginTop: 30 }}>
-              <Button large primary style={{ width: 150, justifyContent: 'center' }}>
+              <Button large primary style={[misc.catamaran,{ width: 150, justifyContent: 'center' }]}>
                 <Text style={misc.reportType}>Report</Text>
               </Button>
             </View>
