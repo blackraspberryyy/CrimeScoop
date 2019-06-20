@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import firebase from 'react-native-firebase';
 import { Container, Content, Form, Item, Input, Button, Text, View} from 'native-base';
+import firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
 import validator from 'validator';
 import MainHeader from '../components/Main/Header';
 import showToast from '../tools/showToast';
+import checkPhoneNumberFormat from '../tools/checkPhoneNumberFormat';
 import getFirebaseSignUpErrorMessage from '../tools/getFirebaseSignUpErrorMessage'
 
 export default class SignUp extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -15,8 +19,19 @@ export default class SignUp extends Component {
       password: '',
       fname: '',
       lname: '',
-      confPassword: ''
+      confPassword: '',
+      phone: '',
+      token: ''
     };
+  }
+
+  componentDidMount(){
+    this._isMounted = true;
+    this.getToken()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleSignUp = () => {
@@ -27,6 +42,11 @@ export default class SignUp extends Component {
 
     if (this.state.confPassword != this.state.password){
       showToast('Password and Confirm Password does not match', 'danger')
+      return
+    }
+
+    if (!checkPhoneNumberFormat(this.state.phone)){
+      showToast('Mobile Phone has an invalid format.', 'danger')
       return
     }
 
@@ -42,6 +62,18 @@ export default class SignUp extends Component {
       })
   }
 
+
+  async getToken(){
+    let token = await AsyncStorage.getItem('fcmToken')
+    if (!token) {
+      token = await firebase.messaging().getToken();
+      if (token) {
+        await AsyncStorage.setItem('fcmToken', token);
+      }
+    }
+    this.setState({ token })
+  }
+
   insertUserToAuth(){
     firebase.auth().onAuthStateChanged(user => {
       if(user){
@@ -50,7 +82,9 @@ export default class SignUp extends Component {
           uid: user.uid,
           fname: this.state.fname,
           lname: this.state.lname,
-          role: 'reporter'
+          role: 'reporter',
+          token: this.state.token,
+          phone: this.state.phone
         }
 
         Users
@@ -65,8 +99,6 @@ export default class SignUp extends Component {
         showToast('Something Unexpected Happened :C', 'danger')
       }
     })
-
-    
   }
 
   goBack(){
@@ -138,6 +170,15 @@ export default class SignUp extends Component {
                 secureTextEntry
                 onChangeText={confPassword => this.setState({ confPassword })}
                 value={this.state.confPassword}
+              />
+            </Item>
+            <Item rounded style={styles.input}>
+              <Input 
+                style={ styles.inputFontSize }
+                placeholder='Phone'
+                keyboardType='numeric'
+                onChangeText={phone => this.setState({ phone })}
+                value={this.state.phone}
               />
             </Item>
             <Button
