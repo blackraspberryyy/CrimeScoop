@@ -48,27 +48,33 @@ export default class App extends Component {
     this.createNotificationListeners();
   }
 
-   //Remove listeners allocated in createNotificationListeners()
+  componentDidMount(){
+    this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(fcmToken => {
+      AsyncStorage.setItem('fcmToken', fcmToken);
+    });
+  }
+
   componentWillUnmount() {
     this.notificationListener();
     this.notificationOpenedListener();
+    this.messageListener();
+    this.onTokenRefreshListener();
   }
 
   async createNotificationListeners() {
     /*
     * Triggered when a particular notification has been received in foreground
+    * Wag kayo maniwala, di naman gumagana to.
     * */
     this.notificationListener = firebase.notifications().onNotification((notification) => {
-      const { title, body } = notification;
-      this.showAlert(title, body);
+      firebase.notifications().displayNotification(notification);
     });
 
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-      const { title, body } = notificationOpen.notification;
-      this.showAlert(title, body);
+      firebase.notifications().displayNotification(notificationOpen);
     });
 
     /*
@@ -76,8 +82,7 @@ export default class App extends Component {
     * */
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
-      const { title, body } = notificationOpen.notification;
-      this.showAlert(title, body);
+      firebase.notifications().displayNotification(notificationOpen);
     }
     /*
     * Triggered for data only payload in foreground
@@ -86,16 +91,6 @@ export default class App extends Component {
       //process data message
       console.log(JSON.stringify(message));
     });
-  }
-
-  showAlert(title, body) {
-    Alert.alert(
-      title, body,
-      [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],
-      { cancelable: false },
-    );
   }
 
   async checkPermission() {
