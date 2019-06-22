@@ -9,7 +9,7 @@ export default styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.7)',
     },
     modal: {
-        height: "60%",
+        height: "80%",
         paddingTop: 10,
         alignSelf: 'center',
         alignItems: 'center',
@@ -35,6 +35,7 @@ export default styles = StyleSheet.create({
     textView: {
         flex: 1,
         alignItems: 'center',
+        height: '100%',
     },
     buttonView: {
         width: "100%",

@@ -80,7 +80,7 @@ export default class ReportCrime extends Component {
                         </Row>
                         <Row>
                             <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => this.changeModalOtherVisibility(true)}>
-                                <Text style={misc.reportType}>Other</Text>
+                                <Text style={misc.reportType}>Others</Text>
                             </Button>
                         </Row>
                     </Grid>
