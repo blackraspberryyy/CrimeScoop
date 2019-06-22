@@ -68,6 +68,7 @@ export default class SignUp extends Component {
     if (!token) {
       token = await firebase.messaging().getToken();
       if (token) {
+        // save sa db?
         await AsyncStorage.setItem('fcmToken', token);
       }
     }

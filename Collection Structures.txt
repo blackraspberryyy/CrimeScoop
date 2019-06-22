@@ -55,7 +55,7 @@ Users: {
 },
 
 Reports: {
-  type: '',
+  crime: '',
   location: '', //location of the crime
   datetime: '',
   upload: '',
