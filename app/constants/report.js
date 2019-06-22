@@ -5,6 +5,7 @@ export default report = {
   crime: '',
   location: '',
   coord: coordinatesObj,
+  barangay: '',
   datetime: '',
   details: '',
   uploads: '',
