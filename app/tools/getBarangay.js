@@ -1,5 +1,5 @@
 import GeoJsonGeometriesLookup from 'geojson-geometries-lookup'
-import geoJson from '../../Barangays.json'
+import geoJson from '../../metroManila.json'
 
 /* sample snippet
   getBarangay(coordinate)
