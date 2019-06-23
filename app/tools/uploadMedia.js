@@ -6,20 +6,24 @@ import firebase from 'react-native-firebase'
   uploadMedia(uri, imageName)
 */
 
+let downloadUrl = ''
+
 export default function(uri, name){
   return new Promise((resolve, reject) => {
     const imageRef = firebase.storage().ref('images').child(name);
     return imageRef.putFile(uri)
       .then(() => {
+        downloadUrl = imageRef.getDownloadURL();
         return imageRef.getDownloadURL();
       })
       .then(url => {
-        resolve(url);
+        downloadUrl = url
         console.log('Done Uploading')
+        resolve(downloadUrl);
       })
       .catch(error => {
-        reject(error);
         console.log('Error uploading image: ', error);
+        reject(downloadUrl);
       });
   });
 }

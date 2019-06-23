@@ -3,7 +3,7 @@ import { Icon, Form, Textarea, Content } from 'native-base';
 import { View, TouchableHighlight, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
 import modalStyle from '../../styles/modal';
 import ImagePicker from 'react-native-image-picker';
-import uploadMedia from '../../tools/uploadMedia'
+import addReportCrime from '../../tools/addReportCrime';
 
 export default class CrimeModal extends Component {
     constructor(props) {
@@ -25,7 +25,10 @@ export default class CrimeModal extends Component {
 
     submitReport = () => {
         this.props.changeModalVisibility(false);
-        // this.addReportCrime()
+        
+        /* let { imageSource, imageName } = this.state
+        let crime = {type: 1, name: 'Theft'}
+        addReportCrime(crime, imageSource.uri, imageName).then(e => {console.log(e)}) */
     }
 
     selectPhotoTapped = () => {
