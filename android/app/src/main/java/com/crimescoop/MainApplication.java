@@ -3,6 +3,7 @@ package com.crimescoop;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.devstepbcn.wifi.AndroidWifiPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AndroidWifiPackage(),
             new LocationServicesDialogBoxPackage(),
             new ImagePickerPackage(),
             new AsyncStoragePackage(),

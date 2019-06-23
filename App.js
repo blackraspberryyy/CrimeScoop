@@ -1,10 +1,10 @@
-import { Alert } from 'react-native'
 import React, { Component } from 'react'
 import { createStackNavigator, createAppContainer, createDrawerNavigator, createSwitchNavigator } from 'react-navigation'
 import { StyleProvider, Root } from "native-base";
 import getSlideFromRightTransition from 'react-navigation-slide-from-right-transition';
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
+import wifi from 'react-native-android-wifi';
 import getTheme from './native-base-theme/components';
 import platform from './native-base-theme/variables/platform';
 import routes from './navRoutes'
@@ -14,6 +14,7 @@ import Login from './app/pages/Login'
 import Welcome from './app/pages/Welcome'
 import SignUp from './app/pages/SignUp'
 import getComponentsFromRoutes from './app/tools/getComponentsFromRoutes';
+import showToast from './app/tools/showToast';
 
 const CustomDrawerContent = props => <SideBar {...props} />
 
@@ -46,9 +47,7 @@ export default class App extends Component {
   async componentDidMount() {
     this.checkPermission();
     this.createNotificationListeners();
-  }
-
-  componentDidMount(){
+    this.checkConnectivity();
     this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(fcmToken => {
       AsyncStorage.setItem('fcmToken', fcmToken);
     });
@@ -59,6 +58,17 @@ export default class App extends Component {
     this.notificationOpenedListener();
     this.messageListener();
     this.onTokenRefreshListener();
+  }
+
+  checkConnectivity(){
+    wifi.isEnabled(isEnabled => {
+      if (isEnabled) {
+        console.log('You are online')
+      } else {
+        showToast('This app opens your WiFi.')
+        wifi.setEnabled(true);
+      }
+    });
   }
 
   async createNotificationListeners() {
