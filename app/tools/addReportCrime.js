@@ -3,6 +3,8 @@ import getCoordinates from '../tools/getCoordinates'
 import getTranslatedAddress from '../tools/getTranslatedAddress'
 import getBarangay from '../tools/getBarangay'
 import uploadMedia from '../tools/uploadMedia';
+import firebase from 'react-native-firebase'
+import getDataWithProps from './firestore/getDataWithProps';
 
 let report = reportObj
 
@@ -21,6 +23,7 @@ function setReport(key, value) {
 export default function (crime, uri, filename) {
   return new Promise((resolve, reject) => {
     if (!(crime && crime.hasOwnProperty('type') && crime.hasOwnProperty('name'))) {
+      returnObj.message = 'Invalid Crime Format'
       reject(returnObj)
     } else {
       setReport('crime', crime)
@@ -53,8 +56,22 @@ export default function (crime, uri, filename) {
       })
   
   
-    //get officers involved
     //get reported by
+    firebase
+      .auth()
+      .onAuthStateChanged(u => {
+        if (u){
+          getDataWithProps('Users', {uid: user.uid}, null, true).then(res => {
+            setReport('reported_by', res[0])
+          })
+        }else{
+          returnObj.message = 'No current User'
+          reject(returnObj)
+        }
+      })
+
+    
+    //get officers involved
 
     resolve(returnObj)
   })

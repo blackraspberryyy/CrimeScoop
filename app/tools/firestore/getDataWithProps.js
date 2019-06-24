@@ -35,19 +35,35 @@ function generateWhereClauses(collectionRef, props, comparison){
 }
 
 
-export default function(collection, props, comparison){
+export default function(collection, props, comparison, isDocumentRefType){
   return new Promise((resolve, reject) => {
     // get document with 'Where' clause
     const collectionRef = firebase.firestore().collection(collection)
+    
     if(!comparison){
       comparison = '=='
     }
-    let query = generateWhereClauses(collectionRef, props, comparison)
+
+    if(!isDocumentRefType){
+      isDocumentRefType = false
+    }
+    
+    let query
+    if(props){
+      query = generateWhereClauses(collectionRef, props, comparison)
+    }else{
+      query = collectionRef
+    }
+
     let rows
 
     query.get()
     .then(querySnapshot => {
-      rows = querySnapshot.docs.map(doc => doc.data())
+      if(isDocumentRefType){
+        rows = querySnapshot.docs.map(doc => doc.ref.path)
+      }else{
+        rows = querySnapshot.docs.map(doc => doc.data())
+      }
       resolve(rows)
     }).catch(err => {
       reject(err)

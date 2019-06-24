@@ -6,6 +6,7 @@ import firebase from 'react-native-firebase'
 import navRoutes from '../../../navRoutes'
 import misc from '../../styles/misc'
 import showToast from "../../tools/showToast";
+import getDataWithProps from "../../tools/firestore/getDataWithProps";
 
 export default class SideBar extends Component {
   _isMounted = false;
@@ -47,28 +48,22 @@ export default class SideBar extends Component {
   }
 
   setUser(user){
-    this.setState(() => ({user_id: user.uid}))
-
     const uid = user.uid
-    const Users = firebase.firestore().collection("Users")
-    const query = Users.where("uid", "==", uid)
+    this.setState({user_id: uid})
 
-    query
-      .get()
-      .then(querySnapshot => {
-        if (querySnapshot.empty) {
-          showToast('No users found', 'danger')
-        }else{
-          if(this._isMounted){
-            const doc = querySnapshot.docs[0]
-            this.setState(() => ({user: doc.data()}))
-  
-            const {user} = this.state
-            showToast('Welcome ' + startCase(user.fname + ' ' + user.lname) + '!', 'success')
-          }
+    getDataWithProps('Users', {uid: uid}).then(result => {
+      if(result.length == 0){
+        showToast('No users found', 'danger')
+      }else{
+        if(this._isMounted){
+          let res = result[0]
+          this.setState({user: res})
+          showToast('Welcome ' + startCase(res.fname + ' ' + res.lname) + '!', 'success')
         }
-      })
-      .catch(e => {console.error(e)})
+      }
+    }).catch(err => {
+      console.log(err)
+    })
   }
   
   render() {
