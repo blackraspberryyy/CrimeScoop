@@ -1,6 +1,9 @@
 import firebase from 'react-native-firebase'
 // NOTE: For now, all clauses will use the given comparison.
+// NOTE2: For now, props that has object in it are not acceptable.
+
 // TODO: can declare comparison for each clauses
+// TODO: can include object for props
 
 /* Props should look like this:
 props: {
@@ -22,22 +25,19 @@ function generateWhereClauses(collectionRef, props, comparison){
   const keys = Object.keys(props)
   let query = collectionRef
 
-  if(keys.length === 1){
-    const key = keys[0]
+  keys.forEach(key => {
     query = query.where(key, comparison, props[key])
-    return query
-  }else{
-    keys.forEach(key => {
-      query = query.where(key, comparison, props[key])
-    });
-    return query
-  }
+  });
+  return query
 }
 
 
 export default function(collection, props, comparison, isDocumentRefType){
   return new Promise((resolve, reject) => {
     // get document with 'Where' clause
+    if(!collection){
+      reject('No collection provided')
+    }
     const collectionRef = firebase.firestore().collection(collection)
     
     if(!comparison){

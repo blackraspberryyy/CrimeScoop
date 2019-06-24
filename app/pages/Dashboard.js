@@ -4,7 +4,6 @@ import firebase from 'react-native-firebase';
 import MainHeader from '../components/Main/Header';
 import { Container, Content, Button } from 'native-base';
 import misc from '../styles/misc';
-// import manifest from './manifest.json';
 
 // Retrieve Firebase Messaging object.
 // const messaging = firebase.messaging();

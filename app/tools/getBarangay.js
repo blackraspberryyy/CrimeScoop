@@ -20,7 +20,7 @@ export default function(coordinate){
     const containersCount = glookup.countContainers(point, options)
     if(containersCount == 0){
       // no barangays found
-      resolve(null)
+      reject(null)
     }else{
       // either a location is under two or more barangays
       // or if a location is under one barangay,

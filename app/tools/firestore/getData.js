@@ -2,6 +2,9 @@ import firebase from 'react-native-firebase'
 
 export default function(collection, docId){
   return new Promise((resolve, reject) => {
+    if(!collection){
+      reject('No collection provided')
+    }
     const collectionRef = firebase.firestore().collection(collection)
     let rows;
     if(!docId){
