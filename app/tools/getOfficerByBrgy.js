@@ -20,7 +20,7 @@ export default function(barangay, isHigh){
     //Each Barangay must have one Barangay Officer and police Officer
     let query = firebase.firestore().collection('Users')
       .where('role', '==', 'brgy_officer')
-      .where('brgys.name', '==', barangay)
+      .where('brgys.barangay', '==', barangay)
 
     query.get()
       .then(querySnapshot => {
@@ -31,7 +31,7 @@ export default function(barangay, isHigh){
             if(isHigh){
               let query2 = firebase.firestore().collection('Users')
               .where('role', '==', 'police_officer')
-              .where('brgys', '==', {name: barangay})
+              .where('brgys', '==', {barangay: barangay})
               query2.get()
               .then(querySnapshot => {
                 if(querySnapshot.empty){
