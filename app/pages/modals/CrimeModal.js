@@ -4,6 +4,7 @@ import { View, TouchableHighlight, Text, TouchableOpacity, Dimensions, Image } f
 import modalStyle from '../../styles/modal';
 import ImagePicker from 'react-native-image-picker';
 import addReportCrime from '../../tools/addReportCrime';
+import showToast from '../../tools/showToast'
 
 export default class CrimeModal extends Component {
     constructor(props) {
@@ -31,6 +32,7 @@ export default class CrimeModal extends Component {
         addReportCrime(crime, details, imageSource.uri, imageName).then(res => {
             console.log(res)
             this.props.changeModalVisibility(false);
+            showToast('Report Added Successfully', 'success')
         })
     }
 
