@@ -8,10 +8,10 @@ export default report = {
   location: '',
   coord: coordinatesObj,
   barangay: '',
-  datetime: '',
   details: '',
   status: 1, // 1 for pending, 2 for responding, 3 for resolved, 4 for Bogus
   upload: '',
+  reportedAt: '', //timestamp Object
   reportedBy: '', //reference Object
   brgyOfficer: '', //reference Object
   policeOfficer: '' //reference Object

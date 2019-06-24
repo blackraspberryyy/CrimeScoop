@@ -30,6 +30,7 @@ export default async function (crime, details, uri, filename) {
     
     setReport('crime', crime).then(() => {
       setReport('details', details)
+      setReport('reportedAt', firebase.firestore.Timestamp.fromDate(new Date()))
 
       getCoordinates().then(coordinate => {
         setReport('coord', coordinate)
@@ -43,10 +44,12 @@ export default async function (crime, details, uri, filename) {
           setReport('barangay', brgy).then(() => {
             let isHigh = crime && crime.type == 2 ? true : false
             getOfficerByBrgy(brgy, isHigh).then(ref => {
-              setReport('brgyOfficer', ref.brgyOfficer)
+              setReport('brgyOfficer', firebase.firestore().doc(ref.brgyOfficer))
               if (isHigh) {
-                setReport('policeOfficer', ref.policeOfficer)
+                setReport('policeOfficer', firebase.firestore().doc(ref.policeOfficer))
               }
+            }).finally(() => {
+              resolve(returnObj)
             })
           })
         }).catch(err => {
@@ -71,7 +74,7 @@ export default async function (crime, details, uri, filename) {
       firebase.auth().onAuthStateChanged(u => {
         if (u) {
           getDataWithProps('Users', { uid: u.uid }, null, true).then(res => {
-            setReport('reportedBy', res[0])
+            setReport('reportedBy', firebase.firestore().doc(res[0]))
           })
         } else {
           returnObj.message = 'No current User'
@@ -79,8 +82,6 @@ export default async function (crime, details, uri, filename) {
         }
       })
     })
-    
-    resolve(returnObj)
   })
 
   return promise
