@@ -1,10 +1,10 @@
 import json from './Barangays.json'
 
 export default function () {
-  const ref = json.features.map(e => e.properties)
+  const ref = json.features
   let tmp = []
   ref.forEach(element => {
-    if (element.REGION == 'Metropolitan Manila') {
+    if (element.properties.REGION == 'Metropolitan Manila') {
       tmp.push(element)
     }
   });
