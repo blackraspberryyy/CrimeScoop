@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Container, H2, Thumbnail, Button, Text } from 'native-base';
 import misc from '../styles/misc'
+import getDocumentWithProps from '../tools/firestore/getDocumentWithProps'
+import getDocument from '../tools/firestore/getDocument'
 
 export default class Welcome extends Component {
   constructor(props) {
@@ -17,6 +19,11 @@ export default class Welcome extends Component {
     this.props.navigation.navigate("SignUp")
   }
 
+  getDoc = () => {
+    getDocumentWithProps('Users', {fname: 'Markus', role: 'brgy_officer'}).then(res => {
+      console.log(res)
+    })
+  }
   render() {
     const logoUrl="../assets/CrimeScoop/logo.png"
     return (
@@ -38,6 +45,14 @@ export default class Welcome extends Component {
           <Button
             style={styles.signup}
             onPress={this.signup}
+            light
+            block
+          >
+            <Text>Sign Up to CrimeScoop</Text>
+          </Button>
+          <Button
+            style={styles.signup}
+            onPress={() => this.getDoc()}
             light
             block
           >
