@@ -1,8 +1,8 @@
 import firebase from 'react-native-firebase'
 
 let returnObj = {
-  brgyOfficer: '',
-  policeOfficer: ''
+  brgyOfficer: null,
+  policeOfficer: null
 }
 
 function setReturnObj(key, value) {

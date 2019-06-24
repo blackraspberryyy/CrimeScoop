@@ -28,10 +28,7 @@ export default class CrimeModal extends Component {
         
         let crime = {type: 2, name: 'Theft'}
         let details = 'There is something here'
-        addReportCrime(crime, details, imageSource.uri, imageName).then(e => {
-            console.log(e)
-            this.props.changeModalVisibility(false);
-        })
+        addReportCrime(crime, details, imageSource.uri, imageName)
     }
 
     selectPhotoTapped = () => {

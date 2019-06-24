@@ -8,10 +8,10 @@ import firebase from 'react-native-firebase'
 
 let downloadUrl = ''
 
-export default function(uri, name){
-  return new Promise((resolve, reject) => {
+export default async function(uri, name){
+  let promise = await new Promise((resolve, reject) => {
     const imageRef = firebase.storage().ref('images').child(name);
-    return imageRef.putFile(uri)
+    imageRef.putFile(uri)
       .then(() => {
         downloadUrl = imageRef.getDownloadURL();
         return imageRef.getDownloadURL();
@@ -26,4 +26,6 @@ export default function(uri, name){
         reject(downloadUrl);
       });
   });
+  
+  return promise
 }
