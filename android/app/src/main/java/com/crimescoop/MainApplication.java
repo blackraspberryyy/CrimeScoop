@@ -3,6 +3,8 @@ package com.crimescoop;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.devstepbcn.wifi.AndroidWifiPackage;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -10,6 +12,7 @@ import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -31,6 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AndroidWifiPackage(),
+            new LocationServicesDialogBoxPackage(),
             new ImagePickerPackage(),
             new AsyncStoragePackage(),
           new RNFirebasePackage(),
@@ -38,7 +43,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseAuthPackage(),
           new RNFirebaseFirestorePackage(),
           new RNFirebaseMessagingPackage(),
-          new RNFirebaseNotificationsPackage()
+          new RNFirebaseNotificationsPackage(),
+          new RNFirebaseStoragePackage()
       );
     }
 

@@ -3,6 +3,7 @@ import { Icon, Form, Textarea, Content } from 'native-base';
 import { View, TouchableHighlight, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
 import modalStyle from '../../styles/modal';
 import ImagePicker from 'react-native-image-picker';
+import addReportCrime from '../../tools/addReportCrime';
 
 export default class CrimeModal extends Component {
     constructor(props) {
@@ -10,6 +11,7 @@ export default class CrimeModal extends Component {
         this.state = {
             width: Dimensions.get('window').width,
             imageSource: null,
+            imageName: ''
         };
         Dimensions.addEventListener('change', (e) => {
             this.setState(e.window);
@@ -19,6 +21,14 @@ export default class CrimeModal extends Component {
 
     closeModal = () => {
         this.props.changeModalVisibility(false);
+    }
+
+    submitReport = () => {
+        this.props.changeModalVisibility(false);
+        
+        /* let { imageSource, imageName } = this.state
+        let crime = {type: 1, name: 'Theft'}
+        addReportCrime(crime, imageSource.uri, imageName).then(e => {console.log(e)}) */
     }
 
     selectPhotoTapped = () => {
@@ -32,8 +42,6 @@ export default class CrimeModal extends Component {
         };
 
         ImagePicker.launchImageLibrary(options, (response) => {
-            console.log('Response = ', response);
-
             if (response.didCancel) {
                 console.log('User cancelled photo picker');
             } else if (response.error) {
@@ -47,7 +55,7 @@ export default class CrimeModal extends Component {
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
                 console.log(response.uri);
                 this.setState({ imageSource: source });
-
+                this.setState({ imageName: response.fileName });
             }
         });
     }
@@ -75,9 +83,8 @@ export default class CrimeModal extends Component {
 
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-                console.log(source);
                 this.setState({ imageSource: source });
-                console.log(this.state.imageSource);
+                this.setState({ imageName: response.fileName });
             }
         });
     }
@@ -113,7 +120,7 @@ export default class CrimeModal extends Component {
                         <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
                             <Text style={[modalStyle.textModal, { color: 'blue' }]}>Cancel</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} underlayColor={'#f1f1f1'}>
+                        <TouchableHighlight onPress={() => this.submitReport()} style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} underlayColor={'#f1f1f1'}>
                             <Text style={[modalStyle.textModal, { color: 'blue' }]}>OK</Text>
                         </TouchableHighlight>
                     </View>

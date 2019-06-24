@@ -10,6 +10,7 @@ export default class CrimeModal extends Component {
         this.state = {
             width: Dimensions.get('window').width,
             imageSource: null,
+            imageName: ''
         };
         Dimensions.addEventListener('change', (e) => {
             this.setState(e.window);
@@ -44,9 +45,8 @@ export default class CrimeModal extends Component {
 
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-                console.log(source);
                 this.setState({ imageSource: source });
-                console.log(this.state.imageSource);
+                this.setState({ imageName: response.fileName });
             }
         });
     }
@@ -61,8 +61,6 @@ export default class CrimeModal extends Component {
         };
 
         ImagePicker.launchCamera(options, (response) => {
-            console.log('Response = ', response);
-
             if (response.didCancel) {
                 console.log('User cancelled photo picker');
             } else if (response.error) {
@@ -75,6 +73,7 @@ export default class CrimeModal extends Component {
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
                 this.setState({ imageSource: source });
+                this.setState({ imageName: response.fileName });
             }
         });
     }

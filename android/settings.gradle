@@ -1,4 +1,8 @@
 rootProject.name = 'CrimeScoop'
+include ':react-native-android-wifi'
+project(':react-native-android-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-wifi/android')
+include ':react-native-android-location-services-dialog-box'
+project(':react-native-android-location-services-dialog-box').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-location-services-dialog-box/android')
 include ':react-native-image-picker'
 project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
 include ':@react-native-community_async-storage'

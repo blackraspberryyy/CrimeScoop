@@ -139,6 +139,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-android-wifi')
+    implementation project(':react-native-android-location-services-dialog-box')
     implementation project(':react-native-image-picker')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-firebase')
@@ -151,6 +153,7 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:17.0.0"
     implementation "com.google.firebase:firebase-firestore:19.0.0"
     implementation "com.google.firebase:firebase-messaging:18.0.0"
+    implementation "com.google.firebase:firebase-storage:17.0.0"
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar' // <-- Add this line if you wish to use badge on Android
 }
 

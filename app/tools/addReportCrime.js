@@ -2,48 +2,77 @@ import reportObj from '../constants/report'
 import getCoordinates from '../tools/getCoordinates'
 import getTranslatedAddress from '../tools/getTranslatedAddress'
 import getBarangay from '../tools/getBarangay'
+import uploadMedia from '../tools/uploadMedia';
+import firebase from 'react-native-firebase'
+import getDataWithProps from './firestore/getDataWithProps';
 
 let report = reportObj
-let reportedByUid = ''
 
-function setReport(key, value){
-  report[key] = value
+let returnObj = {
+  message: '',
+  report: report
 }
 
-function getReport(key){
-  return report[key]
+function setReport(key, value) {
+  return new Promise((resolve, reject) => {
+    report[key] = value
+    resolve()
+  })
 }
 
-export default function(crime){
-  if(!(crime && crime.hasOwnProperty('type') && crime.hasOwnProperty('name'))){
-    return
-  }else{
-    setReport('crime', crime)
-  }
+export default function (crime, uri, filename) {
+  return new Promise((resolve, reject) => {
+    if (!(crime && crime.hasOwnProperty('type') && crime.hasOwnProperty('name'))) {
+      returnObj.message = 'Invalid Crime Format'
+      reject(returnObj)
+    } else {
+      setReport('crime', crime)
+    }
   
-  getCoordinates()
-    .then(coordinate => {
-      setReport('coord', coordinate)
-      getTranslatedAddress(coordinate)
-        .then(result => {
-          setReport('location', result)
-        }).catch(result => {
-          setReport('location', result)
+    getCoordinates()
+      .then(coordinate => {
+        setReport('coord', coordinate).then(e => {
+          getTranslatedAddress(coordinate)
+            .then(result => {
+              setReport('location', result)
+            }).catch(result => {
+              setReport('location', result)
+            })
+          getBarangay(coordinate)
+            .then(result => {
+              if (result) {
+                setReport('barangay', result.properties.NAME_3)
+              } else {
+                setReport('barangay', '')
+              }
+            })
         })
-      getBarangay(coordinate)
-        .then(result => {
-          if(result){
-            setReport('barangay', result.properties.NAME_3)
-          }else{
-            setReport('barangay', '')
-          }
-          console.log(report)
-        })
-    }).catch(coordinate => {
-      setReport('coord', coordinate)
-    })
+      }).catch(coordinate => {
+        setReport('coord', coordinate)
+      })
   
+      uploadMedia(uri, filename).then(url => {
+        setReport('upload', url)
+      })
+  
+  
+    //get reported by
+    firebase
+      .auth()
+      .onAuthStateChanged(u => {
+        if (u){
+          getDataWithProps('Users', {uid: user.uid}, null, true).then(res => {
+            setReport('reported_by', res[0])
+          })
+        }else{
+          returnObj.message = 'No current User'
+          reject(returnObj)
+        }
+      })
 
-  //get officers involved
-  //get reported by
+    
+    //get officers involved
+
+    resolve(returnObj)
+  })
 }
