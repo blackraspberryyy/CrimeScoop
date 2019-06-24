@@ -45,7 +45,9 @@ export default class CrimeModal extends Component {
 
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                console.log(response.uri);
                 this.setState({ imageSource: source });
+
             }
         });
     }

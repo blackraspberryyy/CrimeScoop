@@ -1,5 +1,6 @@
 import Dashboard from './app/pages/Dashboard'
 import ReportCrime from './app/pages/ReportCrime'
+import ManageCrime from './app/pages/ManageCrime'
 
 export default routes = [
   {
@@ -13,5 +14,11 @@ export default routes = [
     route: 'ReportCrime',
     icon: 'warning',
     component: ReportCrime
+  },
+  {
+    key: 'Manage Crime',
+    route: 'ManageCrime',
+    icon: 'cog',
+    component: ManageCrime
   }
 ];
