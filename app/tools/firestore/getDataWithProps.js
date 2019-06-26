@@ -1,4 +1,5 @@
 import firebase from 'react-native-firebase'
+import getDocumentReferenceValue from './getDocumentReferenceValue'
 // NOTE: For now, all clauses will use the given comparison.
 // NOTE2: For now, props that has object in it are not acceptable.
 
@@ -63,6 +64,9 @@ export default function(collection, props, comparison, isDocumentRefType){
         rows = querySnapshot.docs.map(doc => doc.ref.path)
       }else{
         rows = querySnapshot.docs.map(doc => doc.data())
+        rows.forEach(row => {
+          getDocumentReferenceValue(row)
+        })
       }
       resolve(rows)
     }).catch(err => {

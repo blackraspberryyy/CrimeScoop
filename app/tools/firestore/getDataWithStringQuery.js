@@ -1,4 +1,5 @@
 import firebase from 'react-native-firebase'
+import getDocumentReferenceValue from './getDocumentReferenceValue'
 
 export default function(collection, key, comparison, value, isDocumentRefType){
   return new Promise((resolve, reject) => {
@@ -23,6 +24,9 @@ export default function(collection, key, comparison, value, isDocumentRefType){
         rows = querySnapshot.docs.map(doc => doc.ref.path)
       }else{
         rows = querySnapshot.docs.map(doc => doc.data())
+        rows.forEach(row => {
+          getDocumentReferenceValue(row)
+        })
       }
       resolve(rows)
     }).catch(err => {
