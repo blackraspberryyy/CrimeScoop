@@ -36,8 +36,7 @@ export default class SideBar extends Component {
 
   componentDidMount(){
     this._isMounted = true;
-    firebase
-      .auth()
+    firebase.auth()
       .onAuthStateChanged(u => {
         if (u && this._isMounted){
           this.setUser(u)
@@ -65,7 +64,7 @@ export default class SideBar extends Component {
       console.log(err)
     })
   }
-  
+
   render() {
     const { user } = this.state
     return (
@@ -79,27 +78,32 @@ export default class SideBar extends Component {
           </View>
           <FlatList
             data={navRoutes}
-            renderItem={({item}) => 
-            <ListItem
-              noBorder
-              icon
-              button
-              onPress={() => {
-                this.props.navigation.closeDrawer()
-                this.props.navigation.navigate(item.route)
-              }}>
-                <Left>
-                  <Icon 
-                    name={item.icon}
-                    style={misc.blackText}
-                  />
-                </Left>
-                <Body>
-                  <Text>{item.key}</Text>
-                </Body>
-                
-            </ListItem>
-            }/>
+            extraData={this.state}
+            renderItem={( { item } ) => {
+              if(item.auth.indexOf(user.role) > -1){
+                return (
+                  <ListItem
+                    noBorder
+                    icon
+                    button
+                    onPress={() => {
+                      this.props.navigation.closeDrawer()
+                      this.props.navigation.navigate(item.route)
+                    }}>
+                      <Left>
+                        <Icon 
+                          name={item.icon}
+                          style={misc.blackText}
+                        />
+                      </Left>
+                      <Body>
+                        <Text>{item.key}</Text>
+                      </Body>
+                      
+                  </ListItem>
+                )
+              }
+            }}/>
             <ListItem
               noBorder
               icon

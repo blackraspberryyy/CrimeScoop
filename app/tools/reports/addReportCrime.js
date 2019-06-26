@@ -71,7 +71,7 @@ export default async function(crime, details, uri, filename){
 
       let uid = await firebase.auth().currentUser.uid
       await getDataWithProps('Users', { uid: uid }, null, true).then(async res => {
-        await setReport('reportedBy', res[0] ? firebase.firestore().doc(res[0]) : null)
+        await setReport('reportedBy', res[0].path ? firebase.firestore().doc(res[0].path) : null)
       })
 
     })
