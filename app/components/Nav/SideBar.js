@@ -52,11 +52,11 @@ export default class SideBar extends Component {
     this.setState({user_id: uid})
 
     getDataWithProps('Users', {uid: uid}).then(result => {
-      if(result.length == 0){
+      if(result[0].data.length == 0){
         showToast('No users found', 'danger')
       }else{
         if(this._isMounted){
-          let res = result.data[0]
+          let res = result[0].data
           this.setState({user: res})
           showToast('Welcome ' + startCase(res.fname + ' ' + res.lname) + '!', 'success')
         }
