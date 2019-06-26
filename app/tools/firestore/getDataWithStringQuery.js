@@ -21,11 +21,22 @@ export default function(collection, key, comparison, value, isDocumentRefType){
     query.get()
     .then(querySnapshot => {
       if(isDocumentRefType){
-        rows = querySnapshot.docs.map(doc => doc.ref.path)
+        rows = querySnapshot.docs.map(doc => (
+          {
+            id: doc.id,
+            path: doc.ref.path
+          }
+        ))
       }else{
-        rows = querySnapshot.docs.map(doc => doc.data())
+        rows = querySnapshot.docs.map(doc => (
+          {
+            id: doc.id,
+            data: doc.data()
+          }
+        ))
+
         rows.forEach(row => {
-          getDocumentReferenceValue(row)
+          getDocumentReferenceValue(row.data)
         })
       }
       resolve(rows)

@@ -12,9 +12,15 @@ export default function(collection, docId){
       // get all docs in collection
       collectionRef.get()
         .then(querySnapshot => {
-          rows = querySnapshot.docs.map(doc => doc.data())
+          rows = querySnapshot.docs.map(doc => (
+            {
+              id: doc.id,
+              data: doc.data()
+            }
+          ))
+  
           rows.forEach(row => {
-            getDocumentReferenceValue(row)
+            getDocumentReferenceValue(row.data)
           })
           resolve(rows)
         }).catch(err => {
@@ -26,7 +32,8 @@ export default function(collection, docId){
       const docRef = collectionRef.doc(docId)
       docRef.get()
         .then(querySnapshot => {
-          rows = querySnapshot.docs[0].data()
+          rows['id'] = querySnapshot.docs[0].id
+          rows['data'] = querySnapshot.docs[0].data()
           resolve(rows)
         }).catch(err => {
           reject(err)
