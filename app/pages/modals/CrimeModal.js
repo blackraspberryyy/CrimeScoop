@@ -3,7 +3,7 @@ import { Icon, Form, Textarea, Content } from 'native-base';
 import { View, TouchableHighlight, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
 import modalStyle from '../../styles/modal';
 import ImagePicker from 'react-native-image-picker';
-import addReportCrime from '../../tools/addReportCrime';
+import addReportCrime from '../../tools/reports/addReportCrime';
 import showToast from '../../tools/showToast'
 
 export default class CrimeModal extends Component {

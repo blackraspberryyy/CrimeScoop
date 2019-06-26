@@ -1,11 +1,11 @@
 import firebase from 'react-native-firebase'
-import reportObj from '../constants/report'
-import getCoordinates from './getCoordinates'
-import getTranslatedAddress from './getTranslatedAddress'
-import getBarangay from './getBarangay'
-import uploadMedia from './uploadMedia';
-import getDataWithProps from './firestore/getDataWithProps';
-import getOfficerByBrgy from './getOfficerByBrgy'
+import reportObj from '../../constants/report'
+import getCoordinates from '../getCoordinates'
+import getTranslatedAddress from '../getTranslatedAddress'
+import getBarangay from '../getBarangay'
+import uploadMedia from '../uploadMedia';
+import getDataWithProps from '../firestore/getDataWithProps';
+import getOfficerByBrgy from '../getOfficerByBrgy'
 
 let report = reportObj
 
