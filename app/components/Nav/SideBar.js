@@ -56,7 +56,7 @@ export default class SideBar extends Component {
         showToast('No users found', 'danger')
       }else{
         if(this._isMounted){
-          let res = result[0]
+          let res = result.data[0]
           this.setState({user: res})
           showToast('Welcome ' + startCase(res.fname + ' ' + res.lname) + '!', 'success')
         }
