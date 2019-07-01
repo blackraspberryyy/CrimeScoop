@@ -30,13 +30,7 @@ export default styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f00'
   },
-  dashboardHeader: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textAlignVertical: 'bottom',
-    height: 400,
-  },
+  
   reportTypeButton: {
     margin: 10,
     width: '90%',
@@ -46,5 +40,6 @@ export default styles = StyleSheet.create({
   reportType: {
     color: 'white',
     fontSize: 25,
+    fontFamily: 'Catamaran-ExtraBold'
   }
 })
