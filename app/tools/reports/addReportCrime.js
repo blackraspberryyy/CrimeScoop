@@ -44,13 +44,14 @@ export default async function(crime, details, uri, filename){
           await setReport('barangay', brgy).then(async () => {
             let isHigh = crime && crime.type == 2 ? true : false
             await getOfficerByBrgy(brgy, isHigh).then(async ref => {
-              await setReport('brgyOfficer', ref.brgyOfficer ? firebase.firestore().doc(ref.brgyOfficer) : null)
+              await setReport('brgyOfficer', ref.brgyOfficer ? ref.brgyOfficer : null)
               if (isHigh) {
-                await setReport('policeOfficer', ref.policeOfficer ? firebase.firestore().doc(ref.policeOfficer) : null)
+                await setReport('policeOfficer', ref.policeOfficer ? ref.policeOfficer : null)
               }
             })
           })
         }).catch(async err => {
+          console.log(err)
           await setReport('barangay', '')
           returnObj.message = 'Could not find your Barangay'
           reject(returnObj)
@@ -70,8 +71,8 @@ export default async function(crime, details, uri, filename){
       })
 
       let uid = await firebase.auth().currentUser.uid
-      await getDataWithProps('Users', { uid: uid }, null, true).then(async res => {
-        await setReport('reportedBy', res[0].path ? firebase.firestore().doc(res[0].path) : null)
+      await getDataWithProps('Users', { uid: uid }).then(async res => {
+        await setReport('reportedBy', res[0].data)
       })
 
     })

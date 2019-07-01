@@ -20,25 +20,25 @@ export default function(barangay, isHigh){
     //Each Barangay must have one Barangay Officer and police Officer
     let query = firebase.firestore().collection('Users')
       .where('role', '==', 'brgy_officer')
-      .where('brgys.barangay', '==', barangay)
+      .where('brgys', 'array-contains', barangay)
 
     query.get()
       .then(querySnapshot => {
         if(querySnapshot.empty){
           reject('No baranggay officer results')
         }else{
-          setReturnObj('brgyOfficer', querySnapshot.docs[0].ref.path).then(()=>{
+          setReturnObj('brgyOfficer', querySnapshot.docs[0].data()).then(()=>{
             if(isHigh){
               let query2 = firebase.firestore().collection('Users')
               .where('role', '==', 'police_officer')
-              .where('brgys', '==', {barangay: barangay})
+              .where('brgys', 'array-contains', barangay)
               query2.get()
-              .then(querySnapshot => {
-                if(querySnapshot.empty){
-                  setReturnObj('policeOfficer', '')
+              .then(querySnapshot2 => {
+                if(querySnapshot2.empty){
+                  setReturnObj('policeOfficer', null)
                   resolve(returnObj)
                 }else{
-                  setReturnObj('policeOfficer', querySnapshot.docs[0].ref.path)
+                  setReturnObj('policeOfficer', querySnapshot2.docs[0].data())
                   resolve(returnObj)
                 }
               }).catch(err => {
