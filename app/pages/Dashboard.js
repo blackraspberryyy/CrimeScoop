@@ -71,7 +71,7 @@ export default class Dashboard extends Component {
 
         getBarangay(e, true).then(res => {
           this.setState({ geojson: res });
-          console.log(this.state.geoJson)
+          console.log(this.state.geojson)
         })
       })
 
@@ -97,7 +97,12 @@ export default class Dashboard extends Component {
               region={this.state.region}
               onMapReady={this.onMapReady}
             >
-              <Geojson geojson={this.state.geojson}/>
+              <Geojson 
+                geojson={this.state.geojson}
+                strokeColor='#4169E1'
+                strokeWidth={2}
+                fillColor='rgba(65,105,225,0.5)'
+              />
             </MapView>
             <Text style={styles.dashboardHeader}>Are you in danger?</Text>
             <View style={{ marginTop: 30 }}>
