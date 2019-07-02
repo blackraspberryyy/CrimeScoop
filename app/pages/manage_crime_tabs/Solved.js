@@ -68,9 +68,6 @@ export default class Solved extends Component {
                                             <Button transparent onPress={() => [this.changeViewModalVisibility(true), this.getSelectedReport(report.data)]}>
                                                 <Icon name='eye' />
                                             </Button>
-                                            <Button transparent onPress={() => [this.changeConfirmModalVisibility(true), this.getSelectedReport(report)]}>
-                                                <Icon name='paper-plane' />
-                                            </Button>
                                         </Right>
                                     </ListItem>
 

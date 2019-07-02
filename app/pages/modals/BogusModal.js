@@ -4,9 +4,8 @@ import { View, TouchableHighlight, Text, TouchableOpacity, Dimensions, Image } f
 import modalStyle from '../../styles/modal';
 import moveReport from '../../tools/reports/moveReport';
 import showToast from '../../tools/showToast';
-import { tsObjectKeyword } from '@babel/types';
 
-export default class ConfirmModal extends Component {
+export default class BogusModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,20 +26,13 @@ export default class ConfirmModal extends Component {
         this.props.changeModalVisibility(false);
     }
 
+
     changeStatusCrime() {
         const report = this.state.report;
-        if (report.data.status == 1) {
-            if (moveReport(report.id, 2)) {
-                showToast('The report has moved into Responding', 'success')
-            } else {
-                showToast('Something went wrong', 'error')
-            }
-        } else if (report.data.status == 2) {
-            if (moveReport(report.id, 3)) {
-                showToast('The report has moved into Solved', 'success')
-            } else {
-                showToast('Something went wrong', 'error')
-            }
+        if (moveReport(report.id, 4)) {
+            showToast('The report has moved into Bogus Report', 'success')
+        } else {
+            showToast('Something went wrong', 'error')
         }
         this.props.changeModalVisibility(false);
     }
@@ -52,7 +44,7 @@ export default class ConfirmModal extends Component {
                 <View style={[modalStyle.modal, { width: this.state.width - 70, height: '20%' }]}>
                     <Content style={{ height: '100%' }}>
                         <View style={modalStyle.textView}>
-                            <Text style={[modalStyle.textModal, { fontSize: 20, fontWeight: 'bold' }]}>Do you want to update the status of this crime?</Text>
+                            <Text style={[modalStyle.textModal, { fontSize: 20, fontWeight: 'bold' }]}>Do you want to move this crime into Bogus Report?</Text>
                         </View>
                     </Content>
                     <View style={modalStyle.buttonView}>
