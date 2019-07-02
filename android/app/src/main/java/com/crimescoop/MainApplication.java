@@ -3,6 +3,7 @@ package com.crimescoop;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.devstepbcn.wifi.AndroidWifiPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new MapsPackage(),
             new AndroidWifiPackage(),
             new LocationServicesDialogBoxPackage(),
             new ImagePickerPackage(),

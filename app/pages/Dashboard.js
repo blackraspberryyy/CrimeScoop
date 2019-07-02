@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { View, Alert, Text, TouchableOpacity } from 'react-native';
-import firebase from 'react-native-firebase';
-import MainHeader from '../components/Main/Header';
 import { Container, Content, Button } from 'native-base';
+import { View, Alert, Text, StyleSheet, PermissionsAndroid } from 'react-native';
+import firebase from 'react-native-firebase';
+import MapView, { PROVIDER_GOOGLE, Polygon } from 'react-native-maps';
+import MainHeader from '../components/Main/Header';
 import misc from '../styles/misc';
-
-// Retrieve Firebase Messaging object.
-// const messaging = firebase.messaging();
+import latLngObj from '../constants/maps/latLng'
+import getCoordinates from '../tools/getCoordinates'
+import getBarangay from '../tools/getBarangay'
+import Geojson from 'react-native-geojson';
+import geojsonObj from '../constants/maps/geojson'
 
 export default class Dashboard extends Component {
   _isMounted = false;
@@ -15,6 +18,16 @@ export default class Dashboard extends Component {
     this.state = {
       user_id: '',
       location: null,
+      region: {
+        latitude: 14.5995,
+        longitude: 120.9842,
+        latitudeDelta: 0.03,
+        longitudeDelta: 0.02,
+      },
+      coordinates: latLngObj,
+      polygon: [{latitude: 0, longitude: 0}],
+      geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
+      marginBottom: 0
     };
   }
 
@@ -41,6 +54,32 @@ export default class Dashboard extends Component {
   };
 
 
+  onMapReady = () => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
+      getCoordinates().then(e => {
+        let coords = latLngObj
+        coords.longitude = e.lon
+        coords.latitude = e.lat
+        this.setState({ coordinates: coords})
+        this.setState(prevState => ({
+          region: {
+            ...prevState.region,
+            latitude: coords.latitude,
+            longitude: coords.longitude
+          }
+        }))
+
+        getBarangay(e, true).then(res => {
+          this.setState({ geojson: res });
+          console.log(this.state.geojson)
+        })
+      })
+
+      this.setState({ marginBottom: 0 });
+      
+    });
+  }
+
   render() {
     return (
       <Container>
@@ -49,15 +88,31 @@ export default class Dashboard extends Component {
           title="Dashboard"
         />
         <Content>
-          <View style={misc.container}>
-            {/* <Text>Location: {this.state.location}</Text> */}
-            <Text style={[misc.dashboardHeader,misc.catamaran]}>Are you in danger?</Text>
-            {/* <TouchableOpacity onPress={this.findCoordinates}>
-              <Text>Find My Coords?</Text>
-            </TouchableOpacity> */}
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <MapView
+              showsUserLocation={true}
+              rotateEnabled={false}
+              provider={PROVIDER_GOOGLE}
+              style={[styles.map, {marginBottom: this.state.marginBottom}]}
+              region={this.state.region}
+              onMapReady={this.onMapReady}
+            >
+              <Geojson 
+                geojson={this.state.geojson}
+                strokeColor='#4169E1'
+                strokeWidth={2}
+                fillColor='rgba(65,105,225,0.5)'
+              />
+            </MapView>
+            <Text style={styles.dashboardHeader}>Are you in danger?</Text>
             <View style={{ marginTop: 30 }}>
-              <Button large primary style={[misc.catamaran,{ width: 150, justifyContent: 'center' }]}>
-                <Text style={misc.reportType}>Report</Text>
+              <Button 
+                large
+                primary
+                style={styles.reportButton} 
+                onPress={() => {showManila()}}
+              >
+                <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
               </Button>
             </View>
           </View>
@@ -72,3 +127,20 @@ export default class Dashboard extends Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  map: {
+    height: 300,
+    width: 400
+  },
+  reportButton:{
+    width: 150, 
+    justifyContent: 'center', 
+    paddingBottom: 16
+  },
+  dashboardHeader: {
+    fontSize: 58,
+    fontFamily: 'Catamaran-ExtraBold',
+    textAlign: 'center'
+  }
+})
