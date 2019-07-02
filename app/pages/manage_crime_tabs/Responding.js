@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, Icon } from 'native-base';
-import { Modal, RefreshControl } from 'react-native'
+import { Modal } from 'react-native'
 import getDataWithProps from '../../tools/firestore/getDataWithProps';
 import ViewModal from './../modals/ViewModal';
 import ConfirmModal from './../modals/ConfirmModal';
@@ -8,19 +8,18 @@ import ConfirmModal from './../modals/ConfirmModal';
 // Retrieve Firebase Messaging object.
 // const messaging = firebase.messaging();
 
-export default class Pending extends Component {
+export default class Responding extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reportsByPending: [],
+            reportsByResponding: [],
             selectedReport: [],
             isViewModalVisible: false,
             isConfirmModalVisible: false,
-            refreshing: false,
         }
     }
     componentDidMount() {
-        this.getReportsByPending();
+        this.getReportsByResponding();
     }
 
     changeViewModalVisibility = (bool) => {
@@ -31,11 +30,11 @@ export default class Pending extends Component {
         this.setState({ isConfirmModalVisible: bool });
     }
 
-    getReportsByPending() {
-        getDataWithProps('Reports', { status: 1 }).then(res => {
+    getReportsByResponding() {
+        getDataWithProps('Reports', { status: 2 }).then(res => {
             // console.log('Document ID', res[0].id)
             // console.log('Report', res)
-            this.setState({ reportsByPending: res })
+            this.setState({ reportsByResponding: res })
         })
     }
 
@@ -43,22 +42,11 @@ export default class Pending extends Component {
         this.setState({ selectedReport: data })
     }
 
-    _onRefresh = () => {
-        this.setState({ refreshing: false });
-    }
-
     render() {
-        let reports = this.state.reportsByPending;
+        let reports = this.state.reportsByResponding;
         return (
             <Container>
-                <Content
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={() => this.setState({ refreshing: true })}
-                        />
-                    }>
-
+                <Content>
                     <List>
                         {
 

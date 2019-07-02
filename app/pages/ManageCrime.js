@@ -5,7 +5,7 @@ import MainHeader from '../components/Main/Header';
 import { Container, Content, Button, Grid, Col, Row, Tab, Tabs, ScrollableTab, Header } from 'native-base';
 import misc from '../styles/misc';
 import PendingTab from './manage_crime_tabs/Pending';
-import RespondedTab from './manage_crime_tabs/Responded';
+import RespondingTab from './manage_crime_tabs/Responding';
 import BogusReportTab from './manage_crime_tabs/BogusReport';
 import SolvedTab from './manage_crime_tabs/Solved';
 
@@ -31,28 +31,12 @@ export default class ManageCrime extends Component {
                 this.props.navigation.navigate('Loading')
             }
         })
-        this.getReports();
 
-    }
-
-    async getReports() {
-        let arr = []
-        await firebase.firestore().collection('Reports').get()
-            .then(querySnapshot => {
-                querySnapshot.docs.forEach(doc => {
-                    arr.push(doc.data());
-                });
-                this.setState({ reports: arr })
-                // console.log(this.state.reports)
-            }).catch(error => {
-                console.log(error)
-            })
     }
 
     render() {
         return (
             <Container>
-
                 <MainHeader
                     navigation={this.props.navigation}
                     title="Manage Crime"
@@ -61,10 +45,10 @@ export default class ManageCrime extends Component {
                     {/* <Header hasTabs style={{ backgroundColor: 'white' }} /> */}
                     <Tabs renderTabBar={() => <ScrollableTab />} >
                         <Tab heading="Pending">
-                            <PendingTab reports={this.state.reports} />
+                            <PendingTab />
                         </Tab>
-                        <Tab heading="Responded">
-                            <RespondedTab />
+                        <Tab heading="Responding">
+                            <RespondingTab />
                         </Tab>
                         <Tab heading="Solved">
                             <SolvedTab />
