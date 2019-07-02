@@ -96,7 +96,6 @@ export default class Dashboard extends Component {
               }
             })
             this.setState({ crimesInBrgy: crimesInBrgy})
-            console.log(this.state.crimesInBrgy)
           })
         })
       })

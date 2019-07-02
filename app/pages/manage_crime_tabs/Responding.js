@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, Icon } from 'native-base';
-import { Modal } from 'react-native'
+import { Modal, RefreshControl } from 'react-native'
 import getDataWithProps from '../../tools/firestore/getDataWithProps';
 import ViewModal from './../modals/ViewModal';
 import ConfirmModal from './../modals/ConfirmModal';
@@ -18,7 +18,9 @@ export default class Responding extends Component {
             isViewModalVisible: false,
             isConfirmModalVisible: false,
             isBogusModalVisible: false,
+            refreshing: false,
         }
+        this.getReportsByResponding = this.getReportsByResponding.bind(this);
     }
     componentDidMount() {
         this.getReportsByResponding();
@@ -36,7 +38,7 @@ export default class Responding extends Component {
         this.setState({ isBogusModalVisible: bool });
     }
 
-    getReportsByResponding() {
+    getReportsByResponding = () => {
         getDataWithProps('Reports', { status: 2 }).then(res => {
             // console.log('Document ID', res[0].id)
             // console.log('Report', res)
@@ -48,11 +50,22 @@ export default class Responding extends Component {
         this.setState({ selectedReport: data })
     }
 
+    onRefresh = async () => {
+        await this.getReportsByResponding();
+        await this.setState({ refreshing: false });
+    }
+
     render() {
         let reports = this.state.reportsByResponding;
         return (
             <Container>
-                <Content>
+                <Content
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={() => this.onRefresh()}
+                        />
+                    }>
                     <List>
                         {
 
@@ -95,7 +108,10 @@ export default class Responding extends Component {
                         onRequestClose={() => this.changeViewModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ViewModal changeModalVisibility={this.changeViewModalVisibility} report={this.state.selectedReport} />
+                        <ViewModal 
+                            changeModalVisibility={this.changeViewModalVisibility} 
+                            report={this.state.selectedReport} 
+                        />
                     </Modal>
                     <Modal
                         transparent={true}
@@ -103,7 +119,11 @@ export default class Responding extends Component {
                         onRequestClose={() => this.changeConfirmModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ConfirmModal changeModalVisibility={this.changeConfirmModalVisibility} report={this.state.selectedReport} />
+                        <ConfirmModal 
+                            changeModalVisibility={this.changeConfirmModalVisibility} 
+                            report={this.state.selectedReport}
+                            onReport={this.getReportsByResponding}
+                        />
                     </Modal>
                     <Modal
                         transparent={true}
@@ -111,7 +131,11 @@ export default class Responding extends Component {
                         onRequestClose={() => this.changeBogusModalVisibility(false)}
                         animationType='fade'
                     >
-                        <BogusModal changeModalVisibility={this.changeBogusModalVisibility} report={this.state.selectedReport} />
+                        <BogusModal 
+                            changeModalVisibility={this.changeBogusModalVisibility} 
+                            report={this.state.selectedReport}
+                            onReport={this.getReportsByResponding}
+                        />
                     </Modal>
                 </Content>
             </Container >

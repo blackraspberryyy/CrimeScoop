@@ -43,7 +43,10 @@ export default class ManageCrime extends Component {
                 />
                 <Content contentContainerStyle={{ flex: 1 }} style={{ padding: 10 }}>
                     {/* <Header hasTabs style={{ backgroundColor: 'white' }} /> */}
-                    <Tabs renderTabBar={() => <ScrollableTab />} >
+                    <Tabs 
+                        renderTabBar={() => <ScrollableTab />}
+                        onChangeTab={}
+                    >
                         <Tab heading="Pending">
                             <PendingTab />
                         </Tab>

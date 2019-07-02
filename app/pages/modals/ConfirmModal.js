@@ -30,19 +30,21 @@ export default class ConfirmModal extends Component {
     changeStatusCrime() {
         const report = this.state.report;
         if (report.data.status == 1) {
-            if (moveReport(report.id, 2)) {
-                showToast('The report has moved into Responding', 'success')
-            } else {
-                showToast('Something went wrong', 'error')
-            }
+            moveReport(report.id, 2)
+                .then(res => showToast(res, 'success'))
+                .catch(err => showToast(err, 'error'))
+                .finally(() => {
+                    this.props.changeModalVisibility(false);
+                })
         } else if (report.data.status == 2) {
-            if (moveReport(report.id, 3)) {
-                showToast('The report has moved into Solved', 'success')
-            } else {
-                showToast('Something went wrong', 'error')
-            }
+            moveReport(report.id, 3)
+                .then(res => showToast(res, 'success'))
+                .catch(err => showToast(err, 'error'))
+                .finally(() => {
+                    this.props.changeModalVisibility(false)
+                    this.props.onReport()
+                })
         }
-        this.props.changeModalVisibility(false);
     }
 
 

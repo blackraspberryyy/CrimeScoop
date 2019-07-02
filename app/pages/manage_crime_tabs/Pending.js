@@ -20,6 +20,7 @@ export default class Pending extends Component {
             isBogusModalVisible: false,
             refreshing: false,
         }
+        this.getReportsByPending = this.getReportsByPending.bind(this);
     }
     componentDidMount() {
         this.getReportsByPending();
@@ -37,7 +38,7 @@ export default class Pending extends Component {
         this.setState({ isBogusModalVisible: bool });
     }
 
-    getReportsByPending() {
+    getReportsByPending = () =>{
         getDataWithProps('Reports', { status: 1 }).then(res => {
             // console.log('Document ID', res[0].id)
             // console.log('Report', res)
@@ -49,8 +50,9 @@ export default class Pending extends Component {
         this.setState({ selectedReport: data })
     }
 
-    _onRefresh = () => {
-        this.setState({ refreshing: false });
+    onRefresh = async () => {
+        await this.getReportsByPending();
+        await this.setState({ refreshing: false });
     }
 
     render() {
@@ -61,7 +63,7 @@ export default class Pending extends Component {
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={() => this.setState({ refreshing: true })}
+                            onRefresh={() => this.onRefresh()}
                         />
                     }>
 
@@ -115,7 +117,11 @@ export default class Pending extends Component {
                         onRequestClose={() => this.changeConfirmModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ConfirmModal changeModalVisibility={this.changeConfirmModalVisibility} report={this.state.selectedReport} />
+                        <ConfirmModal 
+                            changeModalVisibility={this.changeConfirmModalVisibility} 
+                            report={this.state.selectedReport} 
+                            onReport={this.getReportsByPending}
+                            />
                     </Modal>
                     <Modal
                         transparent={true}
@@ -123,7 +129,11 @@ export default class Pending extends Component {
                         onRequestClose={() => this.changeBogusModalVisibility(false)}
                         animationType='fade'
                     >
-                        <BogusModal changeModalVisibility={this.changeBogusModalVisibility} report={this.state.selectedReport} />
+                        <BogusModal 
+                            changeModalVisibility={this.changeBogusModalVisibility} 
+                            report={this.state.selectedReport} 
+                            onReport={this.getReportsByPending}
+                            />
                     </Modal>
                 </Content>
             </Container >

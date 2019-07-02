@@ -29,12 +29,13 @@ export default class BogusModal extends Component {
 
     changeStatusCrime() {
         const report = this.state.report;
-        if (moveReport(report.id, 4)) {
-            showToast('The report has moved into Bogus Report', 'success')
-        } else {
-            showToast('Something went wrong', 'error')
-        }
-        this.props.changeModalVisibility(false);
+        moveReport(report.id, 4)
+            .then(res => showToast(res, 'success'))
+            .catch(err => showToast(err, 'error'))
+            .finally(() => {
+                this.props.changeModalVisibility(false);
+                this.props.onReport()
+            })
     }
 
 
