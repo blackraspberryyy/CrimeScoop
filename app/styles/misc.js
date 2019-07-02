@@ -41,5 +41,8 @@ export default styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     fontFamily: 'Catamaran-ExtraBold'
+  },
+  centerAlign: {
+    textAlign: 'center'
   }
 })

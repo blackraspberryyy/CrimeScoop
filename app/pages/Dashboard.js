@@ -3,13 +3,13 @@ import { Container, Content, Button, H1, Item, Input } from 'native-base';
 import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions  } from 'react-native';
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import Geojson from 'react-native-geojson';
 import MainHeader from '../components/Main/Header';
 import misc from '../styles/misc';
 import latLngObj from '../constants/maps/latLng'
 import getCoordinates from '../tools/getCoordinates'
 import getBarangay from '../tools/getBarangay'
-import Geojson from 'react-native-geojson';
-import geojsonObj from '../constants/maps/geojson'
+import getDataWithProps from '../tools/firestore/getDataWithProps'
 
 export default class Dashboard extends Component {
   _isMounted = false;
@@ -30,6 +30,8 @@ export default class Dashboard extends Component {
         latitudeDelta: 0.03,
         longitudeDelta: 0.02,
       },
+      population: 0,
+      crimesInBrgy: 0,
       coordinates: latLngObj,
       barangay: 'Loading...',
       geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
@@ -81,8 +83,21 @@ export default class Dashboard extends Component {
         }))
 
         getBarangay(e, true).then(res => {
+          let brgy = res.features[0].properties.NAME_3
           this.setState({ geojson: res })
-          this.setState({ barangay: res.features[0].properties.NAME_3 })
+          this.setState({ barangay: brgy })
+          this.setState({ population: res.features[0].properties.POPULATION ? res.features[0].properties.POPULATION : 0 })
+          getDataWithProps('Reports').then(e => {
+            let crimesInBrgy = 0
+            let reports = e.map(e => e.data)
+            reports.forEach(report => {
+              if(report.barangay == brgy){
+                crimesInBrgy = crimesInBrgy + 1
+              }
+            })
+            this.setState({ crimesInBrgy: crimesInBrgy})
+            console.log(this.state.crimesInBrgy)
+          })
         })
       })
 
@@ -91,6 +106,13 @@ export default class Dashboard extends Component {
   }
 
   render() {
+    let crimeRate = 0
+    if(this.state.population == 0){
+      crimeRate = 'N/A'
+    }else{
+      crimeRate = ( this.state.crimesInBrgy / this.state.population ) * 100000
+      crimeRate = Math.round(crimeRate * 100) / 100
+    }
     return (
       <Container>
         <MainHeader
@@ -99,13 +121,26 @@ export default class Dashboard extends Component {
         />
         <Content>
           <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
-            <Text style={misc.greyText}>You're currently at Barangay</Text>
-            <Item rounded>
-              <Input 
+            <Text style={[misc.greyText, {marginBottom: 24}]}>You're currently at Barangay</Text>
+            <Item rounded style={{marginBottom: 24}}>
+              <Input
+                disabled
                 value={this.state.barangay} 
                 textAlign='center'
               />
             </Item>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>Number of Crime Reports in this Barangay</Text>
+                <H1>{this.state.crimesInBrgy}</H1>
+                <Text style={[misc.blackText, {fontSize: 16}]}>Crime Reports</Text>
+              </View>
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>Crime Rate in this Barangay</Text>
+                <H1 style={{fontSize: 32}}>{crimeRate}</H1>
+                <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+              </View>
+            </View>
           </View>
           <MapView
             rotateEnabled={false}
@@ -126,13 +161,21 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
-          <View style={{ marginTop: 32, alignItems: 'center' }}>
+          <View
+            style={{
+              marginTop:32,
+              borderBottomColor: '#515151',
+              marginHorizontal: 96,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
+          <View style={{ marginBottom: 32, alignItems: 'center' }}>
             <H1 style={[misc.catamaran, {paddingTop: 32, fontSize: 32}]}>Are you in danger?</H1>
             <View style={{ marginTop: 16 }}>
               <Button 
                 large
                 primary
-                style={styles.reportButton} 
+                style={styles.reportButton}
                 >
                 <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
               </Button>
