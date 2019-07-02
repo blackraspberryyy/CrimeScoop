@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { View, Alert, Text, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 import MainHeader from '../components/Main/Header';
-import { Container, Content, Button, Grid, Col, Row, Tab, Tabs, ScrollableTab, Header } from 'native-base';
-import misc from '../styles/misc';
+import { Container, Content, Tab, Tabs, ScrollableTab } from 'native-base';
 import PendingTab from './manage_crime_tabs/Pending';
 import RespondingTab from './manage_crime_tabs/Responding';
 import BogusReportTab from './manage_crime_tabs/BogusReport';
@@ -31,7 +29,6 @@ export default class ManageCrime extends Component {
                 this.props.navigation.navigate('Loading')
             }
         })
-
     }
 
     render() {
@@ -45,7 +42,6 @@ export default class ManageCrime extends Component {
                     {/* <Header hasTabs style={{ backgroundColor: 'white' }} /> */}
                     <Tabs 
                         renderTabBar={() => <ScrollableTab />}
-                        onChangeTab={}
                     >
                         <Tab heading="Pending">
                             <PendingTab />
