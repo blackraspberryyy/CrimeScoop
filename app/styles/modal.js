@@ -40,5 +40,8 @@ export default styles = StyleSheet.create({
     buttonView: {
         width: "100%",
         flexDirection: 'row',
+    },
+    col: {
+        width: "50%",
     }
 })
