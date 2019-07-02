@@ -4,6 +4,7 @@ import { Modal, RefreshControl } from 'react-native'
 import getDataWithProps from '../../tools/firestore/getDataWithProps';
 import ViewModal from './../modals/ViewModal';
 import ConfirmModal from './../modals/ConfirmModal';
+import BogusModal from './../modals/BogusModal';
 
 // Retrieve Firebase Messaging object.
 // const messaging = firebase.messaging();
@@ -16,6 +17,7 @@ export default class Pending extends Component {
             selectedReport: [],
             isViewModalVisible: false,
             isConfirmModalVisible: false,
+            isBogusModalVisible: false,
             refreshing: false,
         }
     }
@@ -29,6 +31,10 @@ export default class Pending extends Component {
 
     changeConfirmModalVisibility = (bool) => {
         this.setState({ isConfirmModalVisible: bool });
+    }
+
+    changeBogusModalVisibility = (bool) => {
+        this.setState({ isBogusModalVisible: bool });
     }
 
     getReportsByPending() {
@@ -81,7 +87,10 @@ export default class Pending extends Component {
                                                 <Icon name='eye' />
                                             </Button>
                                             <Button transparent onPress={() => [this.changeConfirmModalVisibility(true), this.getSelectedReport(report)]}>
-                                                <Icon name='paper-plane' />
+                                                <Icon name='paper-plane' style={{ color: 'green' }} />
+                                            </Button>
+                                            <Button transparent onPress={() => [this.changeBogusModalVisibility(true), this.getSelectedReport(report)]}>
+                                                <Icon name='trash' style={{ color: 'red' }} />
                                             </Button>
                                         </Right>
                                     </ListItem>
@@ -107,6 +116,14 @@ export default class Pending extends Component {
                         animationType='fade'
                     >
                         <ConfirmModal changeModalVisibility={this.changeConfirmModalVisibility} report={this.state.selectedReport} />
+                    </Modal>
+                    <Modal
+                        transparent={true}
+                        visible={this.state.isBogusModalVisible}
+                        onRequestClose={() => this.changeBogusModalVisibility(false)}
+                        animationType='fade'
+                    >
+                        <BogusModal changeModalVisibility={this.changeBogusModalVisibility} report={this.state.selectedReport} />
                     </Modal>
                 </Content>
             </Container >
