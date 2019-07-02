@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Content, Button } from 'native-base';
-import { View, Alert, Text, StyleSheet, PermissionsAndroid } from 'react-native';
+import { Container, Content, Button, H1, Item, Input } from 'native-base';
+import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions  } from 'react-native';
 import firebase from 'react-native-firebase';
-import MapView, { PROVIDER_GOOGLE, Polygon } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import MainHeader from '../components/Main/Header';
 import misc from '../styles/misc';
 import latLngObj from '../constants/maps/latLng'
@@ -18,6 +18,12 @@ export default class Dashboard extends Component {
     this.state = {
       user_id: '',
       location: null,
+      initialRegion: {
+        latitude: 14.5995,
+        longitude: 120.9842,
+        latitudeDelta: 0.03,
+        longitudeDelta: 0.02,
+      },
       region: {
         latitude: 14.5995,
         longitude: 120.9842,
@@ -25,7 +31,7 @@ export default class Dashboard extends Component {
         longitudeDelta: 0.02,
       },
       coordinates: latLngObj,
-      polygon: [{latitude: 0, longitude: 0}],
+      barangay: 'Loading...',
       geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
       marginBottom: 0
     };
@@ -57,10 +63,15 @@ export default class Dashboard extends Component {
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
       getCoordinates().then(e => {
-        let coords = latLngObj
-        coords.longitude = e.lon
-        coords.latitude = e.lat
-        this.setState({ coordinates: coords})
+        let coords = {}
+        coords['latitude'] = e.lat
+        coords['longitude'] = e.lon
+        this.setState(prevState => ({
+          coordinates: {  
+            latitude: coords.latitude,
+            longitude: coords.longitude
+          }
+        }))
         this.setState(prevState => ({
           region: {
             ...prevState.region,
@@ -70,13 +81,12 @@ export default class Dashboard extends Component {
         }))
 
         getBarangay(e, true).then(res => {
-          this.setState({ geojson: res });
-          console.log(this.state.geojson)
+          this.setState({ geojson: res })
+          this.setState({ barangay: res.features[0].properties.NAME_3 })
         })
       })
 
       this.setState({ marginBottom: 0 });
-      
     });
   }
 
@@ -88,30 +98,42 @@ export default class Dashboard extends Component {
           title="Dashboard"
         />
         <Content>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <MapView
-              showsUserLocation={true}
-              rotateEnabled={false}
-              provider={PROVIDER_GOOGLE}
-              style={[styles.map, {marginBottom: this.state.marginBottom}]}
-              region={this.state.region}
-              onMapReady={this.onMapReady}
-            >
-              <Geojson 
-                geojson={this.state.geojson}
-                strokeColor='#4169E1'
-                strokeWidth={2}
-                fillColor='rgba(65,105,225,0.5)'
+          <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
+            <Text style={misc.greyText}>You're currently at Barangay</Text>
+            <Item rounded>
+              <Input 
+                value={this.state.barangay} 
+                textAlign='center'
               />
-            </MapView>
-            <Text style={styles.dashboardHeader}>Are you in danger?</Text>
-            <View style={{ marginTop: 30 }}>
+            </Item>
+          </View>
+          <MapView
+            rotateEnabled={false}
+            provider={PROVIDER_GOOGLE}
+            style={[styles.map, {marginBottom: this.state.marginBottom}]}
+            region={this.state.region}
+            initialRegion={this.state.initialRegion}
+            onMapReady={this.onMapReady}
+          >
+            <Geojson 
+              geojson={this.state.geojson}
+              strokeColor='#4169E1'
+              strokeWidth={2}
+              fillColor='rgba(65,105,225,0.5)'
+            />
+            <Marker
+              coordinate={this.state.coordinates}
+              title={this.state.barangay}
+            />
+          </MapView>
+          <View style={{ marginTop: 32, alignItems: 'center' }}>
+            <H1 style={[misc.catamaran, {paddingTop: 32, fontSize: 32}]}>Are you in danger?</H1>
+            <View style={{ marginTop: 16 }}>
               <Button 
                 large
                 primary
                 style={styles.reportButton} 
-                onPress={() => {showManila()}}
-              >
+                >
                 <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
               </Button>
             </View>
@@ -125,13 +147,13 @@ export default class Dashboard extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-
 }
 
 const styles = StyleSheet.create({
   map: {
     height: 300,
-    width: 400
+    width: Dimensions.get('window').width,
+    alignSelf: 'stretch'
   },
   reportButton:{
     width: 150, 
