@@ -35,6 +35,7 @@ export default class ConfirmModal extends Component {
                 .catch(err => showToast(err, 'error'))
                 .finally(() => {
                     this.props.changeModalVisibility(false);
+                    this.props.onReport()
                 })
         } else if (report.data.status == 2) {
             moveReport(report.id, 3)

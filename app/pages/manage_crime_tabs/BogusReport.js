@@ -108,7 +108,7 @@ export default class BogusReport extends Component {
                         <ConfirmModal 
                             changeModalVisibility={this.changeConfirmModalVisibility} 
                             report={this.state.selectedReport}
-                            onReport={this.getReportsByBogus}                            
+                            onReport={this.onRefresh}
                         />
                     </Modal>
                 </Content>

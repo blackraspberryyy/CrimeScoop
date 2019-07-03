@@ -31,6 +31,25 @@ export default class ManageCrime extends Component {
         })
     }
 
+    reloadData = (i, from) => {
+        if(i == 0 && from == 0){
+            //do Nothing
+        }else{
+            if(this.pendingTab && typeof this.pendingTab.onRefresh() == 'function'){
+                this.pendingTab.onRefresh()
+            }
+            if(this.respondingTab && typeof this.respondingTab.onRefresh() == 'function'){
+                this.respondingTab.onRefresh()
+            }
+            if(this.solvedTab && typeof this.solvedTab.onRefresh() == 'function'){
+                this.solvedTab.onRefresh()
+            }
+            if(this.bogusTab && typeof this.bogusTab.onRefresh() == 'function'){
+                this.bogusTab.onRefresh()
+            }
+        }
+    }
+
     render() {
         return (
             <Container>
@@ -42,18 +61,19 @@ export default class ManageCrime extends Component {
                     {/* <Header hasTabs style={{ backgroundColor: 'white' }} /> */}
                     <Tabs 
                         renderTabBar={() => <ScrollableTab />}
+                        onChangeTab={({i, from}) => this.reloadData(i, from)}
                     >
                         <Tab heading="Pending">
-                            <PendingTab />
+                            <PendingTab ref={e => this.pendingTab = e}/>
                         </Tab>
                         <Tab heading="Responding">
-                            <RespondingTab />
+                            <RespondingTab ref={e => this.respondingTab = e} />
                         </Tab>
                         <Tab heading="Solved">
-                            <SolvedTab />
+                            <SolvedTab ref={e => this.solvedTab = e}/>
                         </Tab>
                         <Tab heading="Bogus Report">
-                            <BogusReportTab />
+                            <BogusReportTab ref={e => this.bogusTab = e}/>
                         </Tab>
                     </Tabs>
                 </Content>

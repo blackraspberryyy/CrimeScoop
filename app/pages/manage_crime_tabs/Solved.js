@@ -110,7 +110,7 @@ export default class Solved extends Component {
                         <ConfirmModal 
                             changeModalVisibility={this.changeConfirmModalVisibility} 
                             report={this.state.selectedReport}
-                            onReport={this.getReportsBySolved}
+                            onReport={this.onRefresh}
                         />
                     </Modal>
                 </Content>

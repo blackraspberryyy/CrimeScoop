@@ -122,7 +122,7 @@ export default class Responding extends Component {
                         <ConfirmModal 
                             changeModalVisibility={this.changeConfirmModalVisibility} 
                             report={this.state.selectedReport}
-                            onReport={this.getReportsByResponding}
+                            onReport={this.onRefresh}
                         />
                     </Modal>
                     <Modal
@@ -134,7 +134,7 @@ export default class Responding extends Component {
                         <BogusModal 
                             changeModalVisibility={this.changeBogusModalVisibility} 
                             report={this.state.selectedReport}
-                            onReport={this.getReportsByResponding}
+                            onReport={this.onRefresh}
                         />
                     </Modal>
                 </Content>

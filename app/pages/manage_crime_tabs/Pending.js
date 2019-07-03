@@ -38,7 +38,7 @@ export default class Pending extends Component {
         this.setState({ isBogusModalVisible: bool });
     }
 
-    getReportsByPending = () =>{
+    getReportsByPending = () => {
         getDataWithProps('Reports', { status: 1 }).then(res => {
             // console.log('Document ID', res[0].id)
             // console.log('Report', res)
@@ -68,9 +68,7 @@ export default class Pending extends Component {
                     }>
 
                     <List>
-                        {
-
-                            reports.map((report, key) => {
+                        { reports.map((report, key) => {
                                 // console.log(report.data.brgyOfficer);
                                 return (
                                     <ListItem thumbnail key={key}>
@@ -100,7 +98,6 @@ export default class Pending extends Component {
                                 );
 
                             })
-
                         }
                     </List>
                     <Modal
@@ -117,11 +114,11 @@ export default class Pending extends Component {
                         onRequestClose={() => this.changeConfirmModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ConfirmModal 
-                            changeModalVisibility={this.changeConfirmModalVisibility} 
-                            report={this.state.selectedReport} 
-                            onReport={this.getReportsByPending}
-                            />
+                        <ConfirmModal
+                            changeModalVisibility={this.changeConfirmModalVisibility}
+                            report={this.state.selectedReport}
+                            onReport={this.onRefresh}
+                        />
                     </Modal>
                     <Modal
                         transparent={true}
@@ -129,11 +126,11 @@ export default class Pending extends Component {
                         onRequestClose={() => this.changeBogusModalVisibility(false)}
                         animationType='fade'
                     >
-                        <BogusModal 
-                            changeModalVisibility={this.changeBogusModalVisibility} 
-                            report={this.state.selectedReport} 
-                            onReport={this.getReportsByPending}
-                            />
+                        <BogusModal
+                            changeModalVisibility={this.changeBogusModalVisibility}
+                            report={this.state.selectedReport}
+                            onReport={this.onRefresh}
+                        />
                     </Modal>
                 </Content>
             </Container >
