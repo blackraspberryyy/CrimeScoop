@@ -6,7 +6,7 @@ export default brgyOfficer = {
   phone: '',
   token: '',
   uid: '',
-  address: '', //where officers are assigned
+  avatar: '',
   role: 'brgy_officer',
   brgys: brgyObj
 }
