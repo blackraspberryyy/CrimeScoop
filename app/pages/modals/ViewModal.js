@@ -44,7 +44,7 @@ export default class ViewModal extends Component {
                     <Content style={{ height: '100%' }}>
                         <Grid>
                             <Row style={{ justifyContent: "center", paddingBottom: 10 }}>
-                                {report.upload == '' ? <Thumbnail square style={{ height: 200, width: 300 }} source={require('./../../assets/placeholder-img.jpg')} />
+                                {report.upload == '' ? <Thumbnail square style={{ height: 200, width: 300 }} source={require('../../assets/placeholder-img.jpg')} />
                                     : <Thumbnail square style={{ height: 200, width: 300 }} source={{ uri: report.upload }} />}
                             </Row>
                             <Row>

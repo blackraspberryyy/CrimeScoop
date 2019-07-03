@@ -68,7 +68,7 @@ export default class BogusReport extends Component {
                                 return (
                                     <ListItem thumbnail key={key}>
                                         <Left>
-                                            {report.data.upload == '' ? <Thumbnail square source={require('./../../assets/placeholder-img.jpg')} />
+                                            {report.data.upload == '' ? <Thumbnail square source={require('../../assets/placeholder-img.jpg')} />
                                                 : <Thumbnail square source={{ uri: report.data.upload }} />}
                                         </Left>
                                         <Body>
