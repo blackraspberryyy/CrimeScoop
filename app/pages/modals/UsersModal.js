@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
+import { capitalize } from 'lodash'
 import { Modal, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { Thumbnail, Content, Form, Item, Input, Button, Text, View} from 'native-base';
+import { Thumbnail, Content, Form, Item, Input, Text, View, Header, Body, Left, Right, Title, Button, Icon} from 'native-base';
+import firebase from 'react-native-firebase'
 import ImagePicker from 'react-native-image-picker';
 import modalStyle from '../../styles/modal'
 import userObj from '../../constants/user'
+import checkPhoneNumberFormat from '../../tools/checkPhoneNumberFormat';
+import showToast from '../../tools/showToast';
 
 export default class UsersModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      mode: 'view', //can be edit
       visibility: false,
       user: {
         data: userObj,
@@ -58,7 +63,7 @@ export default class UsersModal extends Component {
     });
   }
 
-  resetValues = () => {
+  resetValues = () => { // before closing, reset the values
     this.setState({fname: ''})
     this.setState({lname: ''})
     this.setState({phone: ''})
@@ -66,7 +71,74 @@ export default class UsersModal extends Component {
     this.props.onClose()
   }
 
+  changeUser = () => {
+    if(this.state.mode == 'view'){
+      this.resetValues()
+    }else if(this.state.mode == 'edit'){
+      if (!checkPhoneNumberFormat(this.state.phone)){
+        showToast('Mobile Phone has an invalid format.', 'danger')
+        return
+      }
+
+      let downloadUrl = ''
+      if(this.state.avatar != ''){
+        // save avatar picked to storage
+        const imageRef = firebase.storage().ref('avatars').child(this.state.imageName);
+        imageRef.putFile(this.state.avatar.uri)
+          .then(() => {
+            downloadUrl = imageRef.getDownloadURL();
+            return imageRef.getDownloadURL();
+          })
+          .then(url => {
+            downloadUrl = url
+            this.updateUser(this.state.fname, this.state.lname, this.state.phone, downloadUrl)
+          })
+          .catch(error => {
+            console.log('Error uploading image: ', error);
+          })
+          .finally(() => {
+            this.resetValues()
+          })
+      }else{
+        this.updateUser(this.state.fname, this.state.lname, this.state.phone)
+        this.resetValues()
+      }
+    }
+  }
+
+  updateUser = (fname, lname, phone, avatar) => {
+    let updateObj = {
+      fname: fname,
+      lname: lname,
+      phone: phone
+    }
+
+    if(avatar){
+      updateObj['avatar'] = avatar
+    }
+
+    let ref = firebase.firestore().collection('Users').doc(this.state.user.id)
+    ref.update(updateObj)
+    .then(function() {
+      showToast('User successfully edited.', 'success')
+    })
+    .catch(function(error) {
+      showToast('Something went wrong', 'danger')
+      // The document probably doesn't exist.
+      console.log("Error updating document: ", error);
+    });
+
+  }
+
+  toggleMode = () => {
+    let s = this.state.mode == 'view' ? 'edit' : 'view'
+    this.setState({mode: s})
+  }
+
   render() {
+    let disabled = this.state.mode == 'view' ? true : false 
+    let icon = this.state.mode == 'view' ? 'create' : 'eye' 
+
     let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
     let avatar = <Thumbnail large source={ require(defaultAvatar) }/>
 
@@ -80,6 +152,10 @@ export default class UsersModal extends Component {
       }
     }
 
+
+    let form = this.state.fname && 
+      this.state.lname 
+      
     return (
       <Modal
         transparent={true}
@@ -88,24 +164,60 @@ export default class UsersModal extends Component {
         animationType='fade'
       >
         <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.7)' }}>
-          <View style={{ backgroundColor: '#fff', marginHorizontal: 24}}>
+          <View style={{ backgroundColor: '#fff', marginHorizontal: 24, borderRadius: 10}}>
+            <Header>
+              <Left>
+                <Icon 
+                  name='person' 
+                  style={{color: '#fff'}}
+                />
+              </Left>
+              <Body>
+                <Title>{capitalize(this.state.mode)} User</Title>
+              </Body>
+              <Right>
+                <Button 
+                  transparent 
+                  onPress={() => this.toggleMode()}
+                >
+                  <Icon 
+                    name={icon} 
+                    style={{color: '#fff'}}
+                  />
+                </Button>
+              </Right>
+            </Header>
             <Form style={[styles.form, {paddingVertical: 32}]}>
               <View style={{alignItems: 'center', marginBottom: 24}}>
-                <TouchableOpacity onPress={this.selectPhotoTapped}>
+                <TouchableOpacity 
+                  onPress={this.selectPhotoTapped}
+                  disabled={disabled}
+                >
                   { avatar }
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: 'row'}}>
-                <Item rounded style={[styles.input, styles.colInput, {marginRight: 8}]}>
+                <Item 
+                  disabled={disabled}
+                  rounded 
+                  style={[styles.input, styles.colInput, {marginRight: 8}]}
+                >
                   <Input
+                    autoFocus={true}
+                    disabled={disabled}
                     style={ styles.inputFontSize }
                     placeholder='Firstname'
                     onChangeText={fname => {this.setState({fname})}}
                     defaultValue={this.state.user.data.fname}
                     />
                 </Item>
-                <Item rounded style={[styles.input, styles.colInput, {marginLeft: 8}]}>
+                <Item
+                  disabled={disabled}
+                  rounded 
+                  style={[styles.input, styles.colInput, {marginLeft: 8}]}
+                >
                   <Input
+                    disabled={disabled}
                     style={ styles.inputFontSize }
                     placeholder='Lastname'
                     onChangeText={lname => this.setState({lname})}
@@ -113,8 +225,13 @@ export default class UsersModal extends Component {
                   />
                 </Item>
               </View>
-              <Item rounded style={[styles.input, {marginTop: 24}]}>
+              <Item 
+                disabled={disabled}
+                rounded 
+                style={[styles.input, {marginTop: 24}]}
+              >
                 <Input 
+                  disabled={disabled}
                   style={ styles.inputFontSize }
                   placeholder='Phone'
                   keyboardType='numeric'
@@ -131,13 +248,16 @@ export default class UsersModal extends Component {
               >
                 <Text style={[modalStyle.textModal, { color: 'blue' }]}>Cancel</Text>
               </TouchableHighlight>
-              <TouchableHighlight 
-                onPress={() => this.changeReport()} 
-                style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} 
-                underlayColor={'#f1f1f1'}
-              >
-                <Text style={[modalStyle.textModal, { color: 'blue' }]}>Save Changes</Text>
-              </TouchableHighlight>
+              {this.state.mode == 'edit' && (
+                <TouchableHighlight
+                  disabled={ !form }
+                  onPress={() => this.changeUser()} 
+                  style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} 
+                  underlayColor={'#f1f1f1'}
+                >
+                  <Text style={[modalStyle.textModal, { color: !form ? '#ccc' : 'blue' }]}>Save Changes</Text>
+                </TouchableHighlight>
+              )}
             </View>
           </View>
         </Content>

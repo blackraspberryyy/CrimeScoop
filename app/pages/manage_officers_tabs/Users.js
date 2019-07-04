@@ -45,9 +45,9 @@ export default class Reporters extends Component {
       content = <Text>No Reporters</Text>
     }else{
       let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
-      let avatar = <Thumbnail source={ require(defaultAvatar) }/>
       
       content = this.state.users.map((user, key) => {
+        let avatar = <Thumbnail source={ require(defaultAvatar) }/>
         if(user.data.avatar == ''){
           avatar = avatar
         }else{
@@ -106,7 +106,10 @@ export default class Reporters extends Component {
           (<UsersModal
             visibility={this.state.userModalVisibility}
             user={this.state.selected}
-            onClose={() => {this.setModalVisibility(false)}}
+            onClose={() => {
+              this.setModalVisibility(false)
+              this.onRefresh()
+            }}
           />)
         }
         
