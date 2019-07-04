@@ -12,7 +12,8 @@ export default class CrimeModal extends Component {
         this.state = {
             width: Dimensions.get('window').width,
             imageSource: null,
-            imageName: ''
+            imageName: '',
+            details: '',
         };
         Dimensions.addEventListener('change', (e) => {
             this.setState(e.window);
@@ -24,11 +25,17 @@ export default class CrimeModal extends Component {
         this.props.changeModalVisibility(false);
     }
 
-    submitReport = () => {        
+    submitReport = () => {
         let { imageSource, imageName } = this.state
-        
-        let crime = {type: 2, name: 'Theft'}
-        let details = 'There is something here'
+        let crimeName = this.props.crimeName;
+        let crimeType;
+        if (crimeName == 'Brawl') {
+            crimeType = 1;
+        } else {
+            crimeType = 2;
+        }
+        let crime = { type: crimeType, name: crimeName }
+        let details = this.state.details;
         addReportCrime(crime, details, imageSource.uri, imageName).then(res => {
             console.log(res)
             this.props.changeModalVisibility(false);
@@ -98,7 +105,7 @@ export default class CrimeModal extends Component {
                 <View style={[modalStyle.modal, { width: this.state.width - 30 }]}>
                     <Content style={{ height: '100%' }}>
                         <View style={modalStyle.textView}>
-                            <Text style={[modalStyle.textModal, { fontSize: 20, fontWeight: 'bold' }]}>{this.props.setCrimeType} Crime</Text>
+                            <Text style={[modalStyle.textModal, { fontSize: 20, fontWeight: 'bold' }]}>{this.props.crimeName} Crime</Text>
 
                             {this.state.imageSource === null ? (
                                 <Text style={[modalStyle.textModal, { height: '30%', backgroundColor: 'grey', padding: 10 }]}>*Please provide an image of the crime scene.</Text>
@@ -114,7 +121,8 @@ export default class CrimeModal extends Component {
                                 </TouchableOpacity>
                             </View>
                             <Form>
-                                <Textarea style={{ width: 320, height: 120 }} rowSpan={3} bordered placeholder="Details of the crime (Optional)" />
+                                <Textarea style={{ width: 320, height: 120 }} rowSpan={3} bordered placeholder="Details of the crime (Optional)" onChangeText={details => this.setState({ details })}
+                                    value={this.state.details} />
                             </Form>
                             <Text style={[modalStyle.textModal, { color: 'red', height: 200 }]}>*False report will cause your account being blocked in the system.</Text>
 
