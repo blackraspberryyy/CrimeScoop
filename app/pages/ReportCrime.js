@@ -56,24 +56,24 @@ export default class ReportCrime extends Component {
                     <Grid style={{ alignItems: 'center' }}>
                         <Row style={{ flex: 1, alignItems: 'flex-end' }}>
                             <Col>
-                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('THEFT')]}>
+                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('Theft')]}>
                                     <Text style={misc.reportType}>Theft</Text>
                                 </Button>
                             </Col>
                             <Col>
-                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('MURDER')]}>
+                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('Murder')]}>
                                     <Text style={misc.reportType}>Murder</Text>
                                 </Button>
                             </Col>
                         </Row>
                         <Row style={{ flex: 1, alignItems: 'center' }}>
                             <Col>
-                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('KIDNAPPING')]}>
+                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('Kidnapping')]}>
                                     <Text style={misc.reportType}>Kidnapping</Text>
                                 </Button>
                             </Col>
                             <Col>
-                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('BRAWL')]}>
+                                <Button large dark style={[misc.reportTypeButton, misc.catamaran]} onPress={() => [this.changeModalVisibility(true), this.setCrimeType('Brawl')]}>
                                     <Text style={misc.reportType}>Brawl</Text>
                                 </Button>
                             </Col>
@@ -85,7 +85,7 @@ export default class ReportCrime extends Component {
                         </Row>
                     </Grid>
                     <Modal transparent={true} visible={this.state.isModalVisible} onRequestClose={() => this.changeModalVisibility(false)} animationType='fade'>
-                        <CrimeModal changeModalVisibility={this.changeModalVisibility} setCrimeType={this.state.chosenType} />
+                        <CrimeModal changeModalVisibility={this.changeModalVisibility} crimeName={this.state.chosenType} />
                     </Modal>
                     <Modal transparent={true} visible={this.state.isModalOtherVisible} onRequestClose={() => this.changeModalOtherVisibility(false)} animationType='fade'>
                         <OtherCrimeModal changeModalOtherVisibility={this.changeModalOtherVisibility} />

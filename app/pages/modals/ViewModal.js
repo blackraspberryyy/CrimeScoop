@@ -65,6 +65,14 @@ export default class ViewModal extends Component {
                             </Row>
                             <Row>
                                 <Col style={modalStyle.col}>
+                                    <Text style={modalStyle.textModal}>Phone Number:</Text>
+                                </Col>
+                                <Col style={modalStyle.col}>
+                                    <Text style={modalStyle.textModal}>{this.state.reportedBy.phone}</Text>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col style={modalStyle.col}>
                                     <Text style={modalStyle.textModal}>Location:</Text>
                                 </Col>
                                 <Col style={modalStyle.col}>
