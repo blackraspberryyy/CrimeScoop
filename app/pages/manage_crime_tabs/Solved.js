@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, Icon } from 'native-base';
-import { Modal } from 'react-native'
+import { Modal, RefreshControl } from 'react-native'
 import getDataWithProps from '../../tools/firestore/getDataWithProps';
 import ViewModal from './../modals/ViewModal';
 import ConfirmModal from './../modals/ConfirmModal';
@@ -16,7 +16,9 @@ export default class Solved extends Component {
             selectedReport: [],
             isViewModalVisible: false,
             isConfirmModalVisible: false,
+            refreshing: false,
         }
+        this.getReportsBySolved = this.getReportsBySolved.bind(this);
     }
     componentDidMount() {
         this.getReportsBySolved();
@@ -30,7 +32,7 @@ export default class Solved extends Component {
         this.setState({ isConfirmModalVisible: bool });
     }
 
-    getReportsBySolved() {
+    getReportsBySolved = () => {
         getDataWithProps('Reports', { status: 3 }).then(res => {
             // console.log('Document ID', res[0].id)
             // console.log('Report', res)
@@ -42,11 +44,22 @@ export default class Solved extends Component {
         this.setState({ selectedReport: data })
     }
 
+    onRefresh = async () => {
+        await this.getReportsBySolved();
+        await this.setState({ refreshing: false });
+    }
+
     render() {
         let reports = this.state.reportsBySolved;
         return (
             <Container>
-                <Content>
+                <Content
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={() => this.onRefresh()}
+                        />
+                    }>
                     <List>
                         {
 
@@ -55,7 +68,7 @@ export default class Solved extends Component {
                                 return (
                                     <ListItem thumbnail key={key}>
                                         <Left>
-                                            {report.data.upload == '' ? <Thumbnail square source={require('./../../assets/placeholder-img.jpg')} />
+                                            {report.data.upload == '' ? <Thumbnail square source={require('../../assets/placeholder-img.jpg')} />
                                                 : <Thumbnail square source={{ uri: report.data.upload }} />}
                                         </Left>
                                         <Body>
@@ -83,7 +96,10 @@ export default class Solved extends Component {
                         onRequestClose={() => this.changeViewModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ViewModal changeModalVisibility={this.changeViewModalVisibility} report={this.state.selectedReport} />
+                        <ViewModal 
+                            changeModalVisibility={this.changeViewModalVisibility} 
+                            report={this.state.selectedReport} 
+                        />
                     </Modal>
                     <Modal
                         transparent={true}
@@ -91,7 +107,11 @@ export default class Solved extends Component {
                         onRequestClose={() => this.changeConfirmModalVisibility(false)}
                         animationType='fade'
                     >
-                        <ConfirmModal changeModalVisibility={this.changeConfirmModalVisibility} report={this.state.selectedReport} />
+                        <ConfirmModal 
+                            changeModalVisibility={this.changeConfirmModalVisibility} 
+                            report={this.state.selectedReport}
+                            onReport={this.onRefresh}
+                        />
                     </Modal>
                 </Content>
             </Container >

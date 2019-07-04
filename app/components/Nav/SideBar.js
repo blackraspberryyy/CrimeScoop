@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { startCase } from 'lodash'
-import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, H3 } from "native-base";
+import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, Thumbnail } from "native-base";
 import firebase from 'react-native-firebase'
 import navRoutes from '../../../navRoutes'
 import misc from '../../styles/misc'
@@ -66,14 +66,22 @@ export default class SideBar extends Component {
   }
 
   render() {
-    const { user } = this.state
+    let { user } = this.state
+
+    let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
+    let avatar = <Thumbnail source={ require(defaultAvatar) }/>
+    if(user && user.avatar && user.avatar == ''){
+      //do nothing
+    }else{
+      avatar = <Thumbnail source={{uri: user.avatar}}/>
+    }
+
     return (
       <Container>
         <Content>
-          <View
-            style={styles.navHeader}
-          >
-            <H2 style={{fontWeight: 'bold'}}>{startCase(user.fname + ' ' + user.lname)}</H2>
+          <View style={styles.navHeader}>
+            { avatar }
+            <H2 style={{marginTop: 8, fontWeight: 'bold'}}>{startCase(user.fname + ' ' + user.lname)}</H2>
             <Text style={misc.greyText}>{startCase(user.role)}</Text>
           </View>
           <FlatList
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
   navHeader: {
     marginTop: 24,
     padding: 8,
-    height: 160,
+    height: 180,
     flex: 1,
     justifyContent: 'flex-end',
     alignContent: 'flex-start'

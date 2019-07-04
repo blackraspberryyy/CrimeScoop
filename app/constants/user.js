@@ -4,6 +4,6 @@ export default user = {
   phone: '',
   token: '',
   uid: '',
-  address: '', //where officers are assigned
+  avatar: '',
   role: 'reporter'
 }
