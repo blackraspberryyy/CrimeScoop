@@ -51,7 +51,6 @@ export default class UsersModal extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        console.log(response)
         let uri = { uri: response.uri };
         this.setState({ avatar: uri });
         this.setState({ imageName: response.fileName });
