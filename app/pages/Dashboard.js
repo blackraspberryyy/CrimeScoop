@@ -120,7 +120,7 @@ export default class Dashboard extends Component {
         />
         <Content>
           <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
-            <Text style={[misc.greyText, {marginBottom: 24}]}>You're currently at Barangay</Text>
+            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently at Barangay</Text>
             <Item rounded style={{marginBottom: 24}}>
               <Input
                 disabled
@@ -175,7 +175,7 @@ export default class Dashboard extends Component {
                 large
                 primary
                 style={styles.reportButton}
-                >
+              >
                 <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
               </Button>
             </View>

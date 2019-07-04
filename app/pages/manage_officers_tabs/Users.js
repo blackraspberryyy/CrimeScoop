@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, Alert } from 'react-native';
 import { Container, Content, Text, List, ListItem, Thumbnail, Left, Right, Button, Icon, Body } from 'native-base'
 import getDataWithProps from '../../tools/firestore/getDataWithProps'
 import misc from '../../styles/misc'
+import UsersModal from '../modals/UsersModal';
+import userObj from '../../constants/user'
 
 export default class Reporters extends Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
-      refreshing: false
+      selected: {
+        data: userObj,
+        id: ''
+      },
+      refreshing: false,
+      userModalVisibility: false
     };
   }
 
@@ -28,6 +35,10 @@ export default class Reporters extends Component {
     await this.setState({ refreshing: false });
   }
 
+  setModalVisibility = (bool) => {
+    this.setState({userModalVisibility: bool})
+  }
+
   render() {
     let content = <Text>Loading...</Text>
     if(this.state.users.length == 0){
@@ -44,7 +55,15 @@ export default class Reporters extends Component {
         }
 
         return(
-          <ListItem thumbnail key={key}>
+          <ListItem 
+            thumbnail
+            key={key}
+            button={true}
+            onPress={() => {
+              this.setState({userModalVisibility: true})
+              this.setState({selected: user})
+            }}
+          >
             <Left>
               { avatar }
             </Left>
@@ -53,13 +72,10 @@ export default class Reporters extends Component {
               <Text style={misc.greyText}>{user.data.phone}</Text>
             </Body>
             <Right>
-              <Button transparent>
-                <Icon 
-                  name='create' 
-                  style={misc.accentText} 
-                />
-              </Button>
-              <Button transparent>
+              <Button 
+                transparent
+                onPress={() => {Alert.alert("Delete the Item")}}
+              >
                 <Icon 
                   name='trash' 
                   style={{ color: 'red' }} 
@@ -80,11 +96,20 @@ export default class Reporters extends Component {
               refreshing={this.state.refreshing}
               onRefresh={() => this.onRefresh()}
             />
-          }>
+          }
+        >
           <List>
             { content }
           </List>
         </Content>
+        { this.state.userModalVisibility && 
+          (<UsersModal
+            visibility={this.state.userModalVisibility}
+            user={this.state.selected}
+            onClose={() => {this.setModalVisibility(false)}}
+          />)
+        }
+        
       </Container>
     );
   }
