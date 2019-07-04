@@ -39,13 +39,20 @@ export default function () {
     {
       name: 'Lower Bicutan',
       population: 49829
+    },
+    {
+      name: 'Barangay 401',
+      population: 2058
+    },
+    {
+      name: 'Barangay 400',
+      population: 1327
     }
   ]
 
   ref.forEach(element => {
     brgys.forEach(brgy => {
       if (element.properties.NAME_3 == brgy.name) {
-        console.log(element)
         element.properties['POPULATION'] = brgy.population
       }
     })

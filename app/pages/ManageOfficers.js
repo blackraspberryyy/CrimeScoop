@@ -35,7 +35,7 @@ export default class ManageOfficers extends Component {
           navigation={this.props.navigation}
           title="Manage Officers"
         />
-        <Content>
+        <Content contentContainerStyle={{ flex: 1 }}>
           <Tabs 
             renderTabBar={() => <ScrollableTab />}
             onChangeTab={({i, from}) => this.reloadData(i, from)}
