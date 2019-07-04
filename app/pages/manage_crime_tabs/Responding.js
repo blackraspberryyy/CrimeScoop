@@ -72,7 +72,7 @@ export default class Responding extends Component {
                             reports.map((report, key) => {
                                 // console.log(report.data.brgyOfficer);
                                 return (
-                                    <ListItem thumbnail key={key}>
+                                    <ListItem thumbnail key={key} button={true} onPress={() => [this.changeViewModalVisibility(true), this.getSelectedReport(report.data)]}>
                                         <Left>
                                             {report.data.upload == '' ? <Thumbnail square source={require('../../assets/placeholder-img.jpg')} />
                                                 : <Thumbnail square source={{ uri: report.data.upload }} />}
@@ -84,9 +84,6 @@ export default class Responding extends Component {
                                             <Text note numberOfLines={3}>{new Date(report.data.reportedAt.toDate()).toDateString()}</Text>
                                         </Body>
                                         <Right>
-                                            <Button transparent onPress={() => [this.changeViewModalVisibility(true), this.getSelectedReport(report.data)]}>
-                                                <Icon name='eye' />
-                                            </Button>
                                             <Button transparent onPress={() => [this.changeConfirmModalVisibility(true), this.getSelectedReport(report)]}>
                                                 <Icon name='paper-plane' style={{ color: 'green' }} />
                                             </Button>

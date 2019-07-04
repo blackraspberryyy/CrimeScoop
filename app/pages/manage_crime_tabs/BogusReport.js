@@ -66,7 +66,7 @@ export default class BogusReport extends Component {
                             reports.map((report, key) => {
                                 // console.log(report.data.brgyOfficer);
                                 return (
-                                    <ListItem thumbnail key={key}>
+                                    <ListItem thumbnail button={true} key={key} onPress={() => [this.changeViewModalVisibility(true), this.getSelectedReport(report.data)]}>
                                         <Left>
                                             {report.data.upload == '' ? <Thumbnail square source={require('../../assets/placeholder-img.jpg')} />
                                                 : <Thumbnail square source={{ uri: report.data.upload }} />}
@@ -78,9 +78,7 @@ export default class BogusReport extends Component {
                                             <Text note numberOfLines={3}>{new Date(report.data.reportedAt.toDate()).toDateString()}</Text>
                                         </Body>
                                         <Right>
-                                            <Button transparent onPress={() => [this.changeViewModalVisibility(true), this.getSelectedReport(report.data)]}>
-                                                <Icon name='eye' />
-                                            </Button>
+                                           
                                         </Right>
                                     </ListItem>
                                 );
