@@ -1,41 +1,23 @@
 import React, { Component } from 'react';
-import { capitalize } from 'lodash'
 import { Modal, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Thumbnail, Content, Form, Item, Input, Text, View, Header, Body, Left, Right, Title, Button, Icon} from 'native-base';
 import firebase from 'react-native-firebase'
 import ImagePicker from 'react-native-image-picker';
+import validator from 'validator';
 import modalStyle from '../../styles/modal'
-import userObj from '../../constants/user'
-import checkPhoneNumberFormat from '../../tools/checkPhoneNumberFormat';
-import showToast from '../../tools/showToast';
 
-export default class UsersModal extends Component {
+export default class AddUserModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: 'view', //can be edit
-      visibility: false,
-      user: {
-        data: userObj,
-        id: ''
-      },
+      email: '',
+      password: '',
       fname: '',
-      lname: '', 
+      lname: '',
       phone: '',
       avatar: '',
       imageName: ''
     };
-  }
-
-  componentDidMount(){
-    this.setState({fname: this.props.user.data.fname})
-    this.setState({lname: this.props.user.data.lname})
-    this.setState({phone: this.props.user.data.phone})
-    this.setState({visibility: this.props.visibility})
-  }
-
-  static getDerivedStateFromProps = (nextProps) => {
-    return { user: nextProps.user }
   }
 
   selectPhotoTapped = () => {
@@ -68,76 +50,17 @@ export default class UsersModal extends Component {
     this.setState({lname: ''})
     this.setState({phone: ''})
     this.setState({avatar: ''})
+    this.setState({email: ''})
+    this.setState({password: ''})
     this.props.onClose()
   }
 
-  changeUser = () => {
-    if(this.state.mode == 'view'){
-      this.resetValues()
-    }else if(this.state.mode == 'edit'){
-      if (!checkPhoneNumberFormat(this.state.phone)){
-        showToast('Mobile Phone has an invalid format.', 'danger')
-        return
-      }
-
-      let downloadUrl = ''
-      if(this.state.avatar != ''){
-        // save avatar picked to storage
-        const imageRef = firebase.storage().ref('avatars').child(this.state.imageName);
-        imageRef.putFile(this.state.avatar.uri)
-          .then(() => {
-            downloadUrl = imageRef.getDownloadURL();
-            return imageRef.getDownloadURL();
-          })
-          .then(url => {
-            downloadUrl = url
-            this.updateUser(this.state.fname, this.state.lname, this.state.phone, downloadUrl)
-          })
-          .catch(error => {
-            console.log('Error uploading image: ', error);
-          })
-          .finally(() => {
-            this.resetValues()
-          })
-      }else{
-        this.updateUser(this.state.fname, this.state.lname, this.state.phone)
-        this.resetValues()
-      }
-    }
-  }
-
-  updateUser = (fname, lname, phone, avatar) => {
-    let updateObj = {
-      fname: fname,
-      lname: lname,
-      phone: phone
-    }
-
-    if(avatar){
-      updateObj['avatar'] = avatar
-    }
-
-    let ref = firebase.firestore().collection('Users').doc(this.state.user.id)
-    ref.update(updateObj)
-    .then(function() {
-      showToast('User successfully edited.', 'success')
-    })
-    .catch(function(error) {
-      showToast('Something went wrong', 'danger')
-      // The document probably doesn't exist.
-      console.log("Error updating document: ", error);
-    });
-
-  }
-
-  toggleMode = () => {
-    let s = this.state.mode == 'view' ? 'edit' : 'view'
-    this.setState({mode: s})
+  addUser = () => {
+    console.log("Add User")
   }
 
   render() {
-    let disabled = this.state.mode == 'view' ? true : false 
-    let icon = this.state.mode == 'view' ? 'create' : 'eye' 
+    const s = this.state
 
     let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
     let avatar = <Thumbnail large source={ require(defaultAvatar) }/>
@@ -145,16 +68,27 @@ export default class UsersModal extends Component {
     if(this.state.avatar != ''){
       avatar = <Thumbnail large source={this.state.avatar}/>
     }else{
-      if(this.state.user.data.avatar != ''){
-        avatar = <Thumbnail large source={{uri: this.state.user.data.avatar}}/>
-      }else{
-        avatar = avatar //use default
-      }
+      avatar = avatar //use default
     }
 
-    let form = this.state.fname && 
-      this.state.lname 
+    let form = s.email &&
+      validator.isEmail(s.email) &&
+      s.password &&
+      s.fname &&
+      s.lname
+
       
+    let role = 'Reporter'
+    if(this.props.role == 'brgy_officer'){
+      role = 'Brgy. Officer'
+    }else if(this.props.role == 'police_officer'){
+      role = 'Police Officer'
+    }else if(this.props.role == 'superadmin'){
+      role = 'Super Admin'
+    }else{
+      role = role
+    }
+
     return (
       <Modal
         transparent={true}
@@ -172,71 +106,73 @@ export default class UsersModal extends Component {
                 />
               </Left>
               <Body>
-                <Title>{capitalize(this.state.mode)} User</Title>
+                <Title>{role}</Title>
               </Body>
-              <Right>
-                <Button 
-                  transparent 
-                  onPress={() => this.toggleMode()}
-                >
-                  <Icon 
-                    name={icon} 
-                    style={{color: '#fff'}}
-                  />
-                </Button>
-              </Right>
+              <Right style={{border: 1}}/>
             </Header>
             <Form style={[styles.form, {paddingVertical: 32}]}>
               <View style={{alignItems: 'center', marginBottom: 24}}>
-                <TouchableOpacity 
-                  onPress={this.selectPhotoTapped}
-                  disabled={disabled}
-                >
+                <TouchableOpacity onPress={this.selectPhotoTapped}>
                   { avatar }
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: 'row'}}>
                 <Item 
-                  disabled={disabled}
                   rounded 
                   style={[styles.input, styles.colInput, {marginRight: 8}]}
                 >
                   <Input
                     autoFocus={true}
-                    disabled={disabled}
                     style={ styles.inputFontSize }
                     placeholder='Firstname'
                     onChangeText={fname => {this.setState({fname})}}
-                    defaultValue={this.state.user.data.fname}
-                    />
+                  />
                 </Item>
                 <Item
-                  disabled={disabled}
                   rounded 
                   style={[styles.input, styles.colInput, {marginLeft: 8}]}
                 >
                   <Input
-                    disabled={disabled}
                     style={ styles.inputFontSize }
                     placeholder='Lastname'
                     onChangeText={lname => this.setState({lname})}
-                    defaultValue={this.state.user.data.lname}                  
                   />
                 </Item>
               </View>
               <Item 
-                disabled={disabled}
+                rounded 
+                style={[styles.input, {marginTop: 24}]}
+              >
+                <Input
+                  style={ styles.inputFontSize }
+                  autoCapitalize="none"
+                  placeholder='Email'
+                  keyboardType='email-address'
+                  onChangeText={email => this.setState({ email })}
+                />
+              </Item>
+              <Item 
                 rounded 
                 style={[styles.input, {marginTop: 24}]}
               >
                 <Input 
-                  disabled={disabled}
+                  style={ styles.inputFontSize }
+                  placeholder='Password' 
+                  autoCapitalize="none"
+                  secureTextEntry
+                  onChangeText={password => this.setState({ password })}
+                />
+              </Item>
+              <Item 
+                rounded 
+                style={[styles.input, {marginTop: 24}]}
+              >
+                <Input 
                   style={ styles.inputFontSize }
                   placeholder='Phone'
                   keyboardType='numeric'
                   onChangeText={phone => this.setState({phone})}
-                  defaultValue={this.state.user.data.phone}                                  
-                  />
+                />
               </Item>
             </Form>
             <View style={modalStyle.buttonView}>
@@ -247,16 +183,14 @@ export default class UsersModal extends Component {
               >
                 <Text style={[modalStyle.textModal, { color: 'blue' }]}>Cancel</Text>
               </TouchableHighlight>
-              {this.state.mode == 'edit' && (
-                <TouchableHighlight
-                  disabled={ !form }
-                  onPress={() => this.changeUser()} 
-                  style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} 
-                  underlayColor={'#f1f1f1'}
-                >
-                  <Text style={[modalStyle.textModal, { color: !form ? '#ccc' : 'blue' }]}>Save Changes</Text>
-                </TouchableHighlight>
-              )}
+              <TouchableHighlight
+                disabled={ !form }
+                onPress={() => this.addUser()} 
+                style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]} 
+                underlayColor={'#f1f1f1'}
+              >
+                <Text style={[modalStyle.textModal, { color: !form ? '#ccc' : 'blue' }]}>Add User</Text>
+              </TouchableHighlight>
             </View>
           </View>
         </Content>

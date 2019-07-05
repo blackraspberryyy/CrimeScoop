@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Tab, Tabs, ScrollableTab, Text } from 'native-base';
+import { Alert } from 'react-native';
+import { Container, Content, Tab, Tabs, ScrollableTab, Fab, Icon } from 'native-base';
 import MainHeader from '../components/Main/Header';
 import Users from './manage_officers_tabs/Users'
 
