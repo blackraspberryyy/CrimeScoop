@@ -45,7 +45,7 @@ export default class SignUp extends Component {
       return
     }
 
-    if (!checkPhoneNumberFormat(this.state.phone)){
+    if (this.state.phone != '' && !checkPhoneNumberFormat(this.state.phone)){
       showToast('Mobile Phone has an invalid format.', 'danger')
       return
     }

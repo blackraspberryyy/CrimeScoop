@@ -51,7 +51,7 @@ export default class SideBar extends Component {
     this.setState({user_id: uid})
 
     getDataWithProps('Users', {uid: uid}).then(result => {
-      if(result[0].data.length == 0){
+      if(result[0] && result[0].data.length == 0){
         showToast('No users found', 'danger')
       }else{
         if(this._isMounted){
