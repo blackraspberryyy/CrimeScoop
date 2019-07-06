@@ -7,6 +7,7 @@ import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import AddCriminalModal from './modals/AddCriminalModal';
 import ViewCriminalModal from './modals/ViewCriminalModal';
 import { thisExpression } from '@babel/types';
+import firebase from 'react-native-firebase';
 
 export default class NotoriousCriminals extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ export default class NotoriousCriminals extends Component {
 
     componentDidMount = () => {
         this.getNotoriousCriminals();
+        this.getRole();
     }
 
     changeAddCriminalVisibility = (bool) => {
@@ -54,6 +56,7 @@ export default class NotoriousCriminals extends Component {
 
     getRole = () => {
         firebase.auth().onAuthStateChanged((user) => {
+            console.log(user);
             if (user) {
                 uid = user.uid
                 getDataWithProps('Users', { uid: uid }).then(res => {
@@ -66,6 +69,7 @@ export default class NotoriousCriminals extends Component {
 
     render() {
         let criminals = this.state.criminals;
+        console.log(this.state.role);
         return (
             <Container>
                 <MainHeader
@@ -82,14 +86,13 @@ export default class NotoriousCriminals extends Component {
 
                     {
                         (this.state.role == 'police_officer' || this.state.role == 'superadmin') &&
-                            <Fab
-                                style={{ backgroundColor: '#5067FF' }}
-                                position="bottomRight"
-                                onPress={() => this.changeAddCriminalVisibility(true)}
-                            >
-                                <Icon name="add" />
-                            </Fab>
-                            : ''
+                        <Fab
+                            style={{ backgroundColor: '#5067FF' }}
+                            position="bottomRight"
+                            onPress={() => this.changeAddCriminalVisibility(true)}
+                        >
+                            <Icon name="add" />
+                        </Fab>
                     }
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                         {
