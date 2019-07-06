@@ -34,7 +34,7 @@ export default routes = [
   {
     key: 'Manage Officers',
     route: 'ManageOfficers',
-    icon: 'people',
+    icon: 'star',
     component: ManageOfficers,
     auth: ['superadmin']
   },

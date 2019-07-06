@@ -85,7 +85,8 @@ export default class SignUp extends Component {
           lname: this.state.lname,
           role: 'reporter',
           token: this.state.token,
-          phone: this.state.phone
+          phone: this.state.phone,
+          avatar: ''
         }
 
         Users

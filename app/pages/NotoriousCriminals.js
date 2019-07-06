@@ -6,6 +6,7 @@ import getDataWithProps from '../tools/firestore/getDataWithProps';
 import ConfirmDeleteModal from './modals/ConfirmDeleteModal';
 import AddCriminalModal from './modals/AddCriminalModal';
 import ViewCriminalModal from './modals/ViewCriminalModal';
+import firebase from 'react-native-firebase';
 
 export default class NotoriousCriminals extends Component {
     constructor(props) {
@@ -13,6 +14,7 @@ export default class NotoriousCriminals extends Component {
         this.state = {
             criminals: [],
             selectedCriminal: [],
+            role: '',
             isViewModalVisible: false,
             isConfirmDeleteVisible: false,
             isAddCriminalVisible: false,
@@ -22,6 +24,7 @@ export default class NotoriousCriminals extends Component {
 
     componentDidMount = () => {
         this.getNotoriousCriminals();
+        this.getRole();
     }
 
     changeAddCriminalVisibility = (bool) => {
@@ -55,6 +58,19 @@ export default class NotoriousCriminals extends Component {
         await this.setState({ refreshing: false });
     }
 
+    getRole = () => {
+        firebase.auth().onAuthStateChanged((user) => {
+            console.log(user);
+            if (user) {
+                uid = user.uid
+                getDataWithProps('Users', { uid: uid }).then(res => {
+                    currentUser = res[0].data
+                    this.setState({ role: currentUser.role })
+                })
+            }
+        });
+    }
+
     render() {
         let criminals = this.state.criminals;
         
@@ -64,20 +80,24 @@ export default class NotoriousCriminals extends Component {
                     navigation={this.props.navigation}
                     title="Criminals"
                 />
-                <Content contentContainerStyle={{ flex: 1 }}
+                <Content
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={() => this.onRefresh()}
                         />
                     }>
-                    <Fab
-                        style={{ backgroundColor: '#5067FF' }}
-                        position="bottomRight"
-                        onPress={() => this.changeAddCriminalVisibility(true)}
-                    >
-                        <Icon name="add" />
-                    </Fab>
+
+                    {
+                        (this.state.role == 'police_officer' || this.state.role == 'superadmin') &&
+                        <Fab
+                            style={{ backgroundColor: '#5067FF' }}
+                            position="bottomRight"
+                            onPress={() => this.changeAddCriminalVisibility(true)}
+                        >
+                            <Icon name="add" />
+                        </Fab>
+                    }
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                         {
                             criminals.map((criminal, key) => {
@@ -90,19 +110,23 @@ export default class NotoriousCriminals extends Component {
                                         <CardItem style={{ height: 50, justifyContent: 'center' }}>
                                             <Text style={{ fontSize: 20 }}>{criminal.data.fname} {criminal.data.lname}</Text>
                                         </CardItem>
-                                        <CardItem footer style={{ height: 25 }}>
-                                            <Left>
-                                                <Button transparent>
-                                                    <Icon name="create" onPress={() => [this.changeEditCriminalVisibility(true), this.getSelectedCriminal(criminal)]} />
-                                                </Button>
-                                            </Left>
-                                            <Right>
-                                                <Button transparent onPress={() => [this.changeConfirmDeleteVisibility(true), this.getSelectedCriminal(criminal)]}>
-                                                    <Icon name='trash' style={{ color: 'red' }} />
-                                                </Button>
+                                        {
+                                            (this.state.role == 'police_officer' || this.state.role == 'superadmin') &&
+                                            <CardItem footer style={{ height: 25 }}>
+                                                <Left>
+                                                    <Button transparent onPress={() => [this.changeEditCriminalVisibility(true), this.getSelectedCriminal(criminal)]}>
+                                                        <Icon name="create"></Icon>
+                                                    </Button>
+                                                </Left>
+                                                <Right>
+                                                    <Button transparent onPress={() => [this.changeConfirmDeleteVisibility(true), this.getSelectedCriminal(criminal)]}>
+                                                        <Icon name='trash' style={{ color: 'red' }} />
+                                                    </Button>
 
-                                            </Right>
-                                        </CardItem>
+                                                </Right>
+                                            </CardItem>
+                                        }
+
                                     </TouchableOpacity>
                                 )
                             })
@@ -130,7 +154,7 @@ export default class NotoriousCriminals extends Component {
                             criminal={this.state.selectedCriminal}
                             onReport={this.onRefresh}
                         />
-                    </Modal>  
+                    </Modal>
                     <Modal
                         transparent={true}
                         visible={this.state.isAddCriminalVisible}

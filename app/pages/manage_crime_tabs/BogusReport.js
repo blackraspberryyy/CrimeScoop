@@ -41,7 +41,7 @@ export default class BogusReport extends Component {
                 uid = user.uid
                 getDataWithProps('Users', { uid: uid }).then(res => {
                     currentUser = res[0].data
-                    getDataWithProps('Reports', { status: 3 }).then(res => {
+                    getDataWithProps('Reports', { status: 4 }).then(res => {
                         if(currentUser.role == 'brgy_officer' || currentUser.role == 'police_officer'){
                             let reports = []
                             res.forEach(report => {

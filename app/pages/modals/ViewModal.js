@@ -100,7 +100,7 @@ export default class ViewModal extends Component {
                                     <Text style={modalStyle.textModal}>Police Officer:</Text>
                                 </Col>
                                 <Col style={modalStyle.col}>
-                                    <Text style={modalStyle.textModal}>{this.state.policeOfficer.fname} {this.state.policeOfficer.lname}</Text>
+                                    <Text style={modalStyle.textModal}>{this.state.policeOfficer ? this.state.policeOfficer.fname : ''} {this.state.policeOfficer ? this.state.policeOfficer.lname : ''}</Text>
                                 </Col>
                             </Row>
                         </Grid>
