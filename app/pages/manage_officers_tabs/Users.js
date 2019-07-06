@@ -78,7 +78,7 @@ export default class Reporters extends Component {
               <Text style={misc.greyText}>{user.data.phone}</Text>
             </Body>
             <Right>
-              <Button 
+              {/* <Button 
                 transparent
                 onPress={() => {Alert.alert("Delete the Item")}}
               >
@@ -86,7 +86,7 @@ export default class Reporters extends Component {
                   name='trash' 
                   style={{ color: 'red' }} 
                 />
-              </Button>
+              </Button> */}
             </Right>
           </ListItem>
         )

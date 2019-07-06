@@ -25,7 +25,7 @@ export default function(barangay, isHigh){
     query.get()
       .then(querySnapshot => {
         if(querySnapshot.empty){
-          reject('No baranggay officer results')
+          resolve('No barangay officer results')
         }else{
           setReturnObj('brgyOfficer', querySnapshot.docs[0].data()).then(()=>{
             if(isHigh){

@@ -5,6 +5,10 @@ import firebase from 'react-native-firebase'
 import ImagePicker from 'react-native-image-picker';
 import validator from 'validator';
 import modalStyle from '../../styles/modal'
+import BrgyPicker from '../../components/Main/BrgyPicker'
+import showToast from '../../tools/showToast';
+import getFirebaseSignUpErrorMessage from '../../tools/getFirebaseSignUpErrorMessage'
+import checkPhoneNumberFormat from '../../tools/checkPhoneNumberFormat';
 
 export default class AddUserModal extends Component {
   constructor(props) {
@@ -16,7 +20,8 @@ export default class AddUserModal extends Component {
       lname: '',
       phone: '',
       avatar: '',
-      imageName: ''
+      imageName: '',
+      brgys: []
     };
   }
 
@@ -56,7 +61,66 @@ export default class AddUserModal extends Component {
   }
 
   addUser = () => {
-    console.log("Add User")
+    if (!validator.isEmail(this.state.email)){
+      showToast('Email is invalid', 'danger')
+      return
+    }
+
+    if (this.state.phone != '' && !checkPhoneNumberFormat(this.state.phone)){
+      showToast('Mobile Phone has an invalid format.', 'danger')
+      return
+    }
+
+    if (this.props.role == 'brgy_officer' || this.props.role == 'police_officer'){
+      if(this.state.brgys.length == 0){
+        showToast('No Barangay/s provided', 'danger')
+        return
+      }
+    }
+
+
+    let config = {
+      apiKey: 'AIzaSyCWFu_XFZWMLjxP150uW3g6FvtrvO721Rw',
+      authDomain: "crimescoop-27a99.firebaseapp.com",
+      databaseURL: "https://crimescoop-27a99.firebaseio.com",
+      projectId: "crimescoop-27a99",
+      storageBucket: "crimescoop-27a99.appspot.com",
+      appId: "347042043656",
+      messagingSenderId: "347042043656"
+    }
+    let authApp = firebase.initializeApp(config, 'authApp');
+    let detachedAuth = authApp.auth();
+    
+    detachedAuth.createUserWithEmailAndPassword(this.state.email, this.state.password).then(user => {
+      const Users = firebase.firestore().collection('Users')
+      let u = {
+        uid: user.user.uid,
+        fname: this.state.fname,
+        lname: this.state.lname,
+        role: this.props.role,
+        token: '',
+        phone: this.state.phone,
+        avatar: this.state.avatar
+      }
+
+      if(this.props.role == 'brgy_officer' || this.props.role == 'police_officer'){
+        u.brgys = this.state.brgys
+      }
+
+      Users.add(u).then(() => {
+        showToast('Successfully Added a user', 'success')
+        this.resetValues()
+      })
+      .catch(error => {
+        showToast(error, 'danger')
+        this.resetValues()
+      })
+
+    })
+    .catch(error => {
+      let mes = getFirebaseSignUpErrorMessage(error.code)
+      showToast(mes, 'danger')
+    })
   }
 
   render() {
@@ -79,14 +143,19 @@ export default class AddUserModal extends Component {
 
       
     let role = 'Reporter'
+    let withBrgyPicker = false
     if(this.props.role == 'brgy_officer'){
       role = 'Brgy. Officer'
+      withBrgyPicker = true
     }else if(this.props.role == 'police_officer'){
       role = 'Police Officer'
+      withBrgyPicker = true
     }else if(this.props.role == 'superadmin'){
       role = 'Super Admin'
+      withBrgyPicker = false
     }else{
       role = role
+      withBrgyPicker = false
     }
 
     return (
@@ -163,6 +232,14 @@ export default class AddUserModal extends Component {
                   onChangeText={password => this.setState({ password })}
                 />
               </Item>
+              { withBrgyPicker && (
+                <View style={{marginTop: 24, marginHorizontal: 8}}>
+                  <BrgyPicker 
+                    onPick={ items => this.setState({brgys: items}) }
+                    single={ role == 'Brgy. Officer' ? true : false}
+                  />
+                </View>
+              )}
               <Item 
                 rounded 
                 style={[styles.input, {marginTop: 24}]}
