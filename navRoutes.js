@@ -2,6 +2,7 @@ import Dashboard from './app/pages/Dashboard'
 import ReportCrime from './app/pages/ReportCrime'
 import ManageCrime from './app/pages/ManageCrime'
 import ManageOfficers from './app/pages/ManageOfficers'
+import NotoriousCriminals from './app/pages/NotoriousCriminals'
 
 
 /*
@@ -36,5 +37,12 @@ export default routes = [
     icon: 'people',
     component: ManageOfficers,
     auth: ['superadmin']
+  },
+  {
+    key: 'Notorious Criminals',
+    route: 'NotoriousCriminals',
+    icon: 'people',
+    component: NotoriousCriminals,
+    auth: ['reporter', 'brgy_officer', 'police_officer', 'superadmin']
   }
 ];

@@ -106,7 +106,7 @@ export default class ViewModal extends Component {
                         </Grid>
                     </Content>
                     <View style={modalStyle.buttonView}>
-                        <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
+                        <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
                             <Text style={[modalStyle.textModal, { color: 'blue' }]}>Cancel</Text>
                         </TouchableHighlight>
                     </View>

@@ -254,7 +254,7 @@ export default class OtherCrimeModal extends Component {
                                 </Item>
                                 {
                                     this.state.selectedCrime == 'Other' &&
-                                    <Item floatingLabel style={{ marginBottom: 10, width: 305 }} >
+                                    <Item floatingLabel style={{ marginBottom: 10, width: 305 }}  >
                                         <Label>Please specify the type of crime</Label>
                                         <Input
                                             onChangeText={otherCrimeName => this.setState({ otherCrimeName })}
