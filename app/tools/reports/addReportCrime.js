@@ -48,6 +48,12 @@ export default async function(crime, details, uri, filename){
               if (isHigh) {
                 await setReport('policeOfficer', ref.policeOfficer ? ref.policeOfficer : null)
               }
+            }).catch(async err => {
+              console.log(err)
+              await setReport('brgy_officer', {})
+              await setReport('police_officer', {})
+              returnObj.message = 'Could not find an officer'
+              reject(returnObj)
             })
           })
         }).catch(async err => {

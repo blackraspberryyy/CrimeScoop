@@ -70,7 +70,7 @@ export default class SideBar extends Component {
 
     let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
     let avatar = <Thumbnail source={ require(defaultAvatar) }/>
-    if(user && user.avatar && user.avatar == ''){
+    if(user.avatar == ''){
       //do nothing
     }else{
       avatar = <Thumbnail source={{uri: user.avatar}}/>

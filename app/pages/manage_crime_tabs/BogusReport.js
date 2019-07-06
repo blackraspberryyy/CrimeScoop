@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, Button, Icon } from 'native-base';
 import { Modal, RefreshControl } from 'react-native'
+import firebase from 'react-native-firebase'
 import getDataWithProps from '../../tools/firestore/getDataWithProps';
 import ViewModal from './../modals/ViewModal';
 import ConfirmModal from './../modals/ConfirmModal';
@@ -33,11 +34,30 @@ export default class BogusReport extends Component {
     }
 
     getReportsByBogus = () => {
-        getDataWithProps('Reports', { status: 4 }).then(res => {
-            // console.log('Document ID', res[0].id)
-            // console.log('Report', res)
-            this.setState({ reportsByBogus: res })
-        })
+        let uid = ''
+        let currentUser = {}
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                uid = user.uid
+                getDataWithProps('Users', { uid: uid }).then(res => {
+                    currentUser = res[0].data
+                    getDataWithProps('Reports', { status: 3 }).then(res => {
+                        if(currentUser.role == 'brgy_officer' || currentUser.role == 'police_officer'){
+                            let reports = []
+                            res.forEach(report => {
+                                // check if the barangay of report is in brgys of user
+                                if(currentUser.brgys.indexOf(report.data.barangay) > -1){
+                                    reports.push(report)
+                                }
+                            })
+                            this.setState({ reportsByBogus: reports })
+                        }else{
+                            this.setState({ reportsByBogus: res })
+                        }
+                    })
+                })
+            }
+        });
     }
 
     getSelectedReport(data) {
