@@ -92,7 +92,6 @@ export default class AddUserModal extends Component {
     let detachedAuth = authApp.auth();
     
     detachedAuth.createUserWithEmailAndPassword(this.state.email, this.state.password).then(user => {
-      console.log(user.user.uid)
       const Users = firebase.firestore().collection('Users')
       let u = {
         uid: user.user.uid,
@@ -109,7 +108,7 @@ export default class AddUserModal extends Component {
       }
 
       Users.add(u).then(() => {
-        showToast('Successfully Added a report', 'success')
+        showToast('Successfully Added a user', 'success')
         this.resetValues()
       })
       .catch(error => {
@@ -158,8 +157,6 @@ export default class AddUserModal extends Component {
       role = role
       withBrgyPicker = false
     }
-
-    console.log(this.state.brgys)
 
     return (
       <Modal

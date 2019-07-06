@@ -117,7 +117,7 @@ export default class App extends Component {
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       if (fcmToken) {
-        // user has a device token
+        // save sa db?
         await AsyncStorage.setItem('fcmToken', fcmToken);
       }
     }

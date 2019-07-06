@@ -8,6 +8,7 @@ import modalStyle from '../../styles/modal'
 import userObj from '../../constants/user'
 import checkPhoneNumberFormat from '../../tools/checkPhoneNumberFormat';
 import showToast from '../../tools/showToast';
+import BrgyPicker from '../../components/Main/BrgyPicker';
 
 export default class UsersModal extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ export default class UsersModal extends Component {
       lname: '', 
       phone: '',
       avatar: '',
-      imageName: ''
+      imageName: '',
+      brgys:[]
     };
   }
 
@@ -31,6 +33,8 @@ export default class UsersModal extends Component {
     this.setState({fname: this.props.user.data.fname})
     this.setState({lname: this.props.user.data.lname})
     this.setState({phone: this.props.user.data.phone})
+    this.setState({role: this.props.user.data.role})
+    this.setState({brgys: this.props.user.data.brgys ? this.props.user.data.brgys : []})
     this.setState({visibility: this.props.visibility})
   }
 
@@ -68,6 +72,7 @@ export default class UsersModal extends Component {
     this.setState({lname: ''})
     this.setState({phone: ''})
     this.setState({avatar: ''})
+    this.setState({brgys: []})
     this.props.onClose()
   }
 
@@ -117,6 +122,10 @@ export default class UsersModal extends Component {
       updateObj['avatar'] = avatar
     }
 
+    if(this.state.role == 'brgy_officer' || this.state.role == 'police_officer'){
+      updateObj.brgys = this.state.brgys
+    }
+
     let ref = firebase.firestore().collection('Users').doc(this.state.user.id)
     ref.update(updateObj)
     .then(function() {
@@ -155,6 +164,8 @@ export default class UsersModal extends Component {
     let form = this.state.fname && 
       this.state.lname 
       
+    renderBrgys = this.state.brgys.map((e, key) => (<Text key={key}>{'-' + e}</Text>))
+
     return (
       <Modal
         transparent={true}
@@ -224,7 +235,20 @@ export default class UsersModal extends Component {
                   />
                 </Item>
               </View>
-              <Item 
+              { (this.state.role == 'brgy_officer' || this.state.role == 'police_officer')  && (
+                <View style={{marginTop: 24, marginHorizontal: 8}}>
+                  <Text>Duties on:</Text>
+                  { this.state.mode == 'edit' && (
+                    <BrgyPicker
+                      selectedItem={this.state.brgys}
+                      onPick={ items => this.setState({brgys: items}) } 
+                      single={ this.state.role == 'brgy_officer' ? true : false}
+                    />
+                  )}
+                  { this.state.mode == 'view' && renderBrgys }
+                </View>
+              )}
+              <Item
                 disabled={disabled}
                 rounded 
                 style={[styles.input, {marginTop: 24}]}

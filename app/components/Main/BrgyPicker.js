@@ -12,6 +12,20 @@ export default class BrgyPicker extends Component {
     this.items = brgyList
   }
 
+  componentDidMount(){
+    let propsSelected = this.props.selectedItem ? this.props.selectedItem : []
+    let ids = []
+    this.items.forEach(e => {
+      propsSelected.forEach(name => {
+        if(e.name == name){
+          ids.push(e.id)
+        }
+      })
+    })
+
+    this.setState({selectedItems: ids})
+  }
+
   onSelectedItemsChange = selectedItems => {
     this.setState({ selectedItems });
     let names = []
