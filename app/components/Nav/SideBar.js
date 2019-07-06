@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { startCase } from 'lodash'
-import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, Thumbnail } from "native-base";
+import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, Thumbnail, H3 } from "native-base";
 import firebase from 'react-native-firebase'
 import navRoutes from '../../../navRoutes'
 import misc from '../../styles/misc'

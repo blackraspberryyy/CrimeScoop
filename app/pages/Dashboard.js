@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, H1, Item, Input } from 'native-base';
+import { Container, Content, Button, H1, Item, Input, H3 } from 'native-base';
 import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions, RefreshControl } from 'react-native';
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geojson from 'react-native-geojson';
+import center from '@turf/center'
 import MainHeader from '../components/Main/Header';
 import misc from '../styles/misc';
 import latLngObj from '../constants/maps/latLng'
@@ -21,6 +22,7 @@ export default class Dashboard extends Component {
     this.state = {
       user_id: '',
       location: null,
+      user: null,
       role: 'reporter',
       initialRegion: {
         latitude: 14.5995,
@@ -62,6 +64,7 @@ export default class Dashboard extends Component {
         uid = user.uid
         getDataWithProps('Users', { uid: uid }).then(res => {
           this.setState({role: res[0].data.role})
+          this.setState({user: res[0].data})
         })
       }
     })
@@ -115,7 +118,7 @@ export default class Dashboard extends Component {
     }).catch(err => { console.log(err) })
   }
 
-  onRefresh(){
+  onRefresh = () =>{
     let e = this.state.geojson
     this.setState({barangay: e.features[0].properties.NAME_3})
     this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
@@ -128,10 +131,30 @@ export default class Dashboard extends Component {
         }
       })
       this.setState({ crimesInBrgy: crimesInBrgy})
+      let centerPoint = center(e.features[0])
+      let coords = {
+        longitude: centerPoint.geometry.coordinates[0], 
+        latitude: centerPoint.geometry.coordinates[1]
+      }
+      let cameraObj = {
+        center: coords,
+        pitch: 5,
+        heading: 5
+      }
+      this.mapView.animateCamera(cameraObj, {duration: 5000})
+      this.setState(prevState => ({
+        region: {
+          ...prevState.region,
+          latitude: coords.latitude,
+          longitude: coords.longitude
+        }
+      }))
+      this.setState({coordinates: coords})
     })
   }
 
   render() {
+    console.log(this.state.user);
     let crimeRate = 0
     if(this.state.population == 0){
       crimeRate = 'N/A'
@@ -157,7 +180,7 @@ export default class Dashboard extends Component {
           }
         >
           <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
-            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently at Barangay</Text>
+            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently looking at Barangay</Text>
             { (this.state.role == 'reporter' || this.state.role == 'brgy_officer') && (
               <Item rounded style={{marginBottom: 24}}>
                 <Input
@@ -176,16 +199,21 @@ export default class Dashboard extends Component {
                 />
               </View>
             )}
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>Number of Crime Reports in this Barangay</Text>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={[misc.centerAlign, {marginTop: 16}]}>Crime Rate in this Barangay</Text>
+              <H1 style={{fontSize: 32}}>{crimeRate}</H1>
+              <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', marginTop: 24}}>
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>No. Crime Reports in this Barangay</Text>
                 <H1>{this.state.crimesInBrgy}</H1>
                 <Text style={[misc.blackText, {fontSize: 16}]}>Crime Reports</Text>
               </View>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>Crime Rate in this Barangay</Text>
-                <H1 style={{fontSize: 32}}>{crimeRate}</H1>
-                <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>Population in this Barangay</Text>
+                <H1 style={{fontSize: 32}}>{this.state.population == 0 ? 'N/A' : this.state.population}</H1>
+                <Text style={[misc.blackText, {fontSize: 16}]}> residents</Text>
               </View>
             </View>
           </View>
@@ -196,6 +224,7 @@ export default class Dashboard extends Component {
             region={this.state.region}
             initialRegion={this.state.initialRegion}
             onMapReady={this.onMapReady}
+            ref={e => this.mapView = e}
           >
             <Geojson 
               geojson={this.state.geojson}
@@ -208,6 +237,17 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
+          
+          { (this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
+              <View style={{marginVertical: 24, marginHorizontal: 40}}>
+                <H3>Duties on:</H3>
+                { (this.state.user && this.state.user.brgys) && this.state.user.brgys.map((e, key) => {
+                  return (
+                    <Text key={key}>- {e}</Text>
+                  )
+                })}
+              </View>
+            )}
           {/* <View
             style={{
               marginTop:32,
