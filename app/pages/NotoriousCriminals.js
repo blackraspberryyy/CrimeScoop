@@ -16,6 +16,7 @@ export default class NotoriousCriminals extends Component {
             isViewModalVisible: false,
             isConfirmDeleteVisible: false,
             isAddCriminalVisible: false,
+            isEditCriminalVisible: false
         };
     }
 
@@ -25,6 +26,10 @@ export default class NotoriousCriminals extends Component {
 
     changeAddCriminalVisibility = (bool) => {
         this.setState({ isAddCriminalVisible: bool });
+    }
+
+    changeEditCriminalVisibility = (bool) => {
+        this.setState({ isEditCriminalVisible: bool });
     }
 
     changeConfirmDeleteVisibility = (bool) => {
@@ -52,6 +57,7 @@ export default class NotoriousCriminals extends Component {
 
     render() {
         let criminals = this.state.criminals;
+        
         return (
             <Container>
                 <MainHeader
@@ -87,7 +93,7 @@ export default class NotoriousCriminals extends Component {
                                         <CardItem footer style={{ height: 25 }}>
                                             <Left>
                                                 <Button transparent>
-                                                    <Icon name="create"></Icon>
+                                                    <Icon name="create" onPress={() => [this.changeEditCriminalVisibility(true), this.getSelectedCriminal(criminal)]} />
                                                 </Button>
                                             </Left>
                                             <Right>
@@ -133,6 +139,19 @@ export default class NotoriousCriminals extends Component {
                     >
                         <AddCriminalModal
                             changeAddCriminalVisibility={this.changeAddCriminalVisibility}
+                            criminal={this.state.selectedCriminal}
+                            onReport={this.onRefresh}
+                        />
+                    </Modal>
+                    <Modal
+                        transparent={true}
+                        visible={this.state.isEditCriminalVisible}
+                        onRequestClose={() => this.changeEditCriminalVisibility(false)}
+                        animationType='fade'
+                    >
+                        <AddCriminalModal
+                            mode="edit"
+                            changeEditCriminalVisibility={this.changeEditCriminalVisibility}
                             criminal={this.state.selectedCriminal}
                             onReport={this.onRefresh}
                         />

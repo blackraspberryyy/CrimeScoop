@@ -17,7 +17,24 @@ export default class AddCriminalModal extends Component {
             crimes: [],
             holder: '',
             inputCrime: ['input-0'],
+            criminal: {}
         };
+    }
+
+    componentDidMount(){
+        if(this.props.criminal){
+            this.setState({criminal: this.props.criminal.data})
+            this.setState({fname: this.props.criminal.data.fname})
+            this.setState({lname: this.props.criminal.data.lname})
+            this.setState({crimes: this.props.criminal.data.crimes})
+            this.setState({avatar: this.props.criminal.data.upload})
+            if(this.props.criminal.data.crimes.length > 0){
+                let newInput = `input-${this.state.inputCrime.length}`;
+                this.setState(prevState => ({ inputCrime: prevState.inputCrime.concat([newInput]) }));
+                console.log(this.state.inputCrime)
+                this.state.crimes.push(this.state.holder.toString());
+            }
+        }
     }
 
     selectPhotoTapped = () => {
@@ -50,14 +67,18 @@ export default class AddCriminalModal extends Component {
         this.setState({ lname: '' })
         this.setState({ avatar: '' })
         this.setState({ email: '' })
-        this.props.changeAddCriminalVisibility(false);
+        if(this.props.mode == 'edit'){
+            this.props.changeEditCriminalVisibility(false);
+        }else{
+            this.props.changeAddCriminalVisibility(false)
+        }
     }
 
     addInputCrime = () => {
-        var newInput = `input-${this.state.inputCrime.length}`;
+        let newInput = `input-${this.state.inputCrime.length}`;
         this.setState(prevState => ({ inputCrime: prevState.inputCrime.concat([newInput]) }));
         this.state.crimes.push(this.state.holder.toString());
-        console.log(this.state.crimes);
+        this.setState({holder: ''})
     }
 
     render() {
@@ -74,6 +95,33 @@ export default class AddCriminalModal extends Component {
         let form =
             s.fname &&
             s.lname
+
+        let mode = 'Add'
+        if (this.props.mode == 'edit'){
+            mode = 'Edit'
+        }else{
+            mode = 'Add'
+        }
+
+        renderCrimes = this.state.inputCrime.map( (crime, key) => {
+            return (
+                <View style={{ flexDirection: 'row' }} key={key}>
+                    <Item
+                        rounded
+                        style={[styles.input, styles.colInput, { marginRight: 8 }]}
+                    >
+                        <Input
+                            autoFocus={true}
+                            style={styles.inputFontSize}
+                            placeholder='Crime'
+                            onChangeText={crimes => { this.setState({ holder: crimes }) }}
+                            value={this.state.crimes[key] == '' ? undefined : this.state.crimes[key]}
+                        />
+                    </Item>
+                </View>
+            )
+        })
+
         return (
             <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.7)' }}>
                 <View style={{ backgroundColor: '#fff', marginHorizontal: 24, borderRadius: 10 }}>
@@ -85,7 +133,7 @@ export default class AddCriminalModal extends Component {
                             />
                         </Left>
                         <Body>
-                            <Title>Add Criminal</Title>
+                            <Title>{ mode } Criminal</Title>
                         </Body>
                         <Right style={{ border: 1 }} />
                     </Header>
@@ -105,6 +153,7 @@ export default class AddCriminalModal extends Component {
                                     style={styles.inputFontSize}
                                     placeholder='Firstname'
                                     onChangeText={fname => { this.setState({ fname }) }}
+                                    value={this.state.fname}
                                 />
                             </Item>
                             <Item
@@ -115,30 +164,28 @@ export default class AddCriminalModal extends Component {
                                     style={styles.inputFontSize}
                                     placeholder='Lastname'
                                     onChangeText={lname => this.setState({ lname })}
+                                    value={this.state.lname}
                                 />
                             </Item>
                         </View>
                         <Icon name='add' style={{ color: 'green', paddingTop: 10 }} onPress={() => this.addInputCrime()} />
                         <Text>Click to add crime</Text>
-                        {
-                            this.state.inputCrime.map((crime, key) => {
-                                return (
-                                    <View style={{ flexDirection: 'row' }} key={key}>
-                                        <Item
-                                            rounded
-                                            style={[styles.input, styles.colInput, { marginRight: 8 }]}
-                                        >
-                                            <Input
-                                                autoFocus={true}
-                                                style={styles.inputFontSize}
-                                                placeholder='Crime'
-                                                onChangeText={crimes => { this.setState({ holder: crimes }) }}
-                                            />
-                                        </Item>
-                                    </View>
-                                )
-                            })
-                        }
+                        { renderCrimes }
+                        { this.props.mode == 'edit' && (
+                            <View style={{ flexDirection: 'row' }}>
+                                <Item
+                                    rounded
+                                    style={[styles.input, styles.colInput, { marginRight: 8 }]}
+                                >
+                                    <Input
+                                        autoFocus={true}
+                                        style={styles.inputFontSize}
+                                        placeholder='Crime'
+                                        onChangeText={crimes => { this.setState({ holder: crimes }) }}
+                                    />
+                                </Item>
+                            </View>
+                        )}
                     </Form>
                     <View style={modalStyle.buttonView}>
                         <TouchableHighlight
@@ -154,7 +201,7 @@ export default class AddCriminalModal extends Component {
                             style={[modalStyle.touchableHighlight, { borderBottomRightRadius: 10 }]}
                             underlayColor={'#f1f1f1'}
                         >
-                            <Text style={[modalStyle.textModal, { color: !form ? '#ccc' : 'blue' }]}>Add Criminal</Text>
+                            <Text style={[modalStyle.textModal, { color: !form ? '#ccc' : 'blue' }]}>{mode} Criminal</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
