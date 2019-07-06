@@ -160,7 +160,7 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
-          <View
+          {/* <View
             style={{
               marginTop:32,
               borderBottomColor: '#515151',
@@ -179,7 +179,7 @@ export default class Dashboard extends Component {
                 <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
               </Button>
             </View>
-          </View>
+          </View> */}
 
         </Content>
       </Container>
