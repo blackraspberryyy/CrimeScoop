@@ -54,6 +54,7 @@ export default class NotoriousCriminals extends Component {
   }
 
   onRefresh = async () => {
+    this.setState({ refreshing: true });
     await this.getNotoriousCriminals();
     await this.setState({ refreshing: false });
   }

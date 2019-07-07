@@ -3,6 +3,7 @@ import ReportCrime from './app/pages/ReportCrime'
 import ManageCrime from './app/pages/ManageCrime'
 import ManageOfficers from './app/pages/ManageOfficers'
 import NotoriousCriminals from './app/pages/NotoriousCriminals'
+import BarangayReports from './app/pages/BarangayReports'
 
 
 /*
@@ -29,6 +30,13 @@ export default routes = [
     route: 'ManageCrime',
     icon: 'cog',
     component: ManageCrime,
+    auth: ['brgy_officer', 'police_officer', 'superadmin']
+  },
+  {
+    key: 'Barangay Reports',
+    route: 'BarangayReports',
+    icon: 'filing',
+    component: BarangayReports,
     auth: ['brgy_officer', 'police_officer', 'superadmin']
   },
   {

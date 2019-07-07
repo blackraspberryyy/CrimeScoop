@@ -119,7 +119,7 @@ export default class AddCriminalModal extends Component {
     let avatar = <Thumbnail large source={require(defaultAvatar)} />
 
     if (this.state.avatar != '') {
-      avatar = <Thumbnail large source={this.state.avatar} />
+      avatar = <Thumbnail large source={{uri: this.state.avatar}} />
     } else {
       avatar = avatar //use default
     }
