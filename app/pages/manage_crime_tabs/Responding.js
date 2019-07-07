@@ -15,7 +15,7 @@ export default class Responding extends Component {
         super(props);
         this.state = {
             reportsByResponding: [],
-            selectedReport: [],
+            selectedReport: {},
             isViewModalVisible: false,
             isConfirmModalVisible: false,
             isBogusModalVisible: false,

@@ -23,6 +23,11 @@ export default styles = StyleSheet.create({
         textAlign: 'center',
         color: 'black',
     },
+    text: {
+        margin: 5,
+        fontSize: 16,
+        color: 'black',
+    },
     touchableHighlight: {
         flex: 1,
         backgroundColor: 'white',
