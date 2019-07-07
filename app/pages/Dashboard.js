@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
-import { Container, Content, Button, H1, Item, Input } from 'native-base';
-import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions } from 'react-native';
-=======
 import { Container, Content, Button, H1, Item, Input, H3 } from 'native-base';
 import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions, RefreshControl } from 'react-native';
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geojson from 'react-native-geojson';
@@ -45,14 +40,9 @@ export default class Dashboard extends Component {
       crimesInBrgy: 0,
       coordinates: latLngObj,
       barangay: 'Loading...',
-<<<<<<< HEAD
-      geojson: { type: "featureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: [120.981857, 14.687221] }, properties: { ID_0: 177, ISO: "PHL", NAME_0: "Philippines", ID_1: 47, NAME_1: "Metropolitan Manila", ID_2: 966, NAME_2: "Valenzuela", ID_3: 25811, NAME_3: "Karuhatan", NL_NAME_3: "", VARNAME_3: "", TYPE_3: "Barangay", ENGTYPE_3: "Village", PROVINCE: "Metropolitan Manila", REGION: "Metropolitan Manila" } }] },
-      marginBottom: 0
-=======
       geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
       marginBottom: 0,
       refreshing: false
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
     };
   }
 
@@ -97,16 +87,6 @@ export default class Dashboard extends Component {
 
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
-<<<<<<< HEAD
-      getCoordinates().then(e => {
-        let coords = {}
-        coords['latitude'] = e.lat
-        coords['longitude'] = e.lon
-        this.setState(prevState => ({
-          coordinates: {
-            latitude: coords.latitude,
-            longitude: coords.longitude
-=======
       if(this._isMounted){
         getCoordinates().then(e => {
           let coords = {}
@@ -155,7 +135,6 @@ export default class Dashboard extends Component {
         reports.forEach(report => {
           if(report.barangay == e.features[0].properties.NAME_3){
             crimesInBrgy = crimesInBrgy + 1
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
           }
         })
         this.setState({ crimesInBrgy: crimesInBrgy})
@@ -177,27 +156,7 @@ export default class Dashboard extends Component {
             longitude: coords.longitude
           }
         }))
-<<<<<<< HEAD
-
-        getBarangay(e, true).then(res => {
-          let brgy = res.features[0].properties.NAME_3
-          this.setState({ geojson: res })
-          this.setState({ barangay: brgy })
-          this.setState({ population: res.features[0].properties.POPULATION ? res.features[0].properties.POPULATION : 0 })
-          getDataWithProps('Reports').then(e => {
-            let crimesInBrgy = 0
-            let reports = e.map(e => e.data)
-            reports.forEach(report => {
-              if (report.barangay == brgy) {
-                crimesInBrgy = crimesInBrgy + 1
-              }
-            })
-            this.setState({ crimesInBrgy: crimesInBrgy })
-          })
-        })
-=======
         this.setState({coordinates: coords})
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
       })
     }
   }
@@ -216,21 +175,6 @@ export default class Dashboard extends Component {
           navigation={this.props.navigation}
           title="Dashboard"
         />
-<<<<<<< HEAD
-        <Content>
-          <View style={[misc.container, { paddingHorizontal: 16, paddingTop: 8, marginBottom: 16 }]}>
-            <Text style={[misc.greyText, { marginBottom: 16 }]}>You're currently at Barangay</Text>
-            <Item rounded style={{ marginBottom: 24 }}>
-              <Input
-                disabled
-                value={this.state.barangay}
-                textAlign='center'
-              />
-            </Item>
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={[misc.centerAlign, { height: 48 }]}>Number of Crime Reports in this Barangay</Text>
-=======
         <Content
           refreshControl={
             <RefreshControl
@@ -270,21 +214,13 @@ export default class Dashboard extends Component {
             <View style={{flex: 1, flexDirection: 'row', marginTop: 24}}>
               <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
                 <Text style={[misc.centerAlign, {height: 48}]}>No. Crime Reports in this Barangay</Text>
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
                 <H1>{this.state.crimesInBrgy}</H1>
                 <Text style={[misc.blackText, { fontSize: 16 }]}>Crime Reports</Text>
               </View>
-<<<<<<< HEAD
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={[misc.centerAlign, { height: 48 }]}>Crime Rate in this Barangay</Text>
-                <H1 style={{ fontSize: 32 }}>{crimeRate}</H1>
-                <Text style={[misc.blackText, { fontSize: 16 }]}> / per 100,000 people</Text>
-=======
               <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
                 <Text style={[misc.centerAlign, {height: 48}]}>Population in this Barangay</Text>
                 <H1 style={{fontSize: 32}}>{this.state.population == 0 ? 'N/A' : this.state.population}</H1>
                 <Text style={[misc.blackText, {fontSize: 16}]}> residents</Text>
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
               </View>
             </View>
           </View>
@@ -308,9 +244,6 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
-<<<<<<< HEAD
-          <View
-=======
           
           { (this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
               <View style={{marginVertical: 24, marginHorizontal: 40}}>
@@ -323,7 +256,6 @@ export default class Dashboard extends Component {
               </View>
             )}
           {/* <View
->>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
             style={{
               marginTop: 32,
               borderBottomColor: '#515151',
