@@ -54,7 +54,7 @@ export default class BarangayReports extends Component {
       <Container>
         <MainHeader
           navigation={this.props.navigation}
-          title="Dashboard"
+          title="Brgy. Reports"
         />
         <Content
           refreshControl={

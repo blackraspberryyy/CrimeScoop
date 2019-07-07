@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Content, Button, H1, Item, Input, H3 } from 'native-base';
+import { Container, Content, Button, H1, Item, Input, H3, H2 } from 'native-base';
 import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions, RefreshControl } from 'react-native';
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
@@ -14,8 +14,7 @@ import getDataWithProps from '../tools/firestore/getDataWithProps'
 import getData from '../tools/firestore/getData'
 import BrgyDropdown from '../components/Main/BrgyDropdown'
 import getBarangayByName from '../tools/getBarangayByName';
-import { thisExpression } from '@babel/types';
-
+import ReportList from '../components/Main/ReportList'
 
 export default class Dashboard extends Component {
   _isMounted = false;
@@ -59,7 +58,7 @@ export default class Dashboard extends Component {
         this.props.navigation.navigate('Loading')
       }
     })
-    this.getReports();
+    this.getReports()
   }
 
   setRole() {
@@ -75,19 +74,6 @@ export default class Dashboard extends Component {
       }
     })
   }
-
-  findCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const location = JSON.stringify(position);
-        if (this._isMounted) {
-          this.setState({ location });
-        }
-      },
-      error => Alert.alert(error.message),
-      { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
-    );
-  };
 
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
@@ -164,6 +150,7 @@ export default class Dashboard extends Component {
       })
     }
   }
+
   getReports = () => {
     getData('Reports').then(res => {
       let reports = []
@@ -188,7 +175,7 @@ export default class Dashboard extends Component {
       <Container>
         <MainHeader
           navigation={this.props.navigation}
-          title="Barangay Reports"
+          title="Dashboard"
         />
         <Content
           refreshControl={
@@ -214,7 +201,7 @@ export default class Dashboard extends Component {
             )}
 
             {(this.state.role == 'police_officer' || this.state.role == 'superadmin') && (
-              <View style={{ marginBottom: 24 }}>
+              <View style={{ marginBottom: 16 }}>
                 <BrgyDropdown
                   selected={this.state.barangay}
                   onPick={e => this.getGeoJson(e)}
@@ -262,12 +249,16 @@ export default class Dashboard extends Component {
 
           {(this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
             <View style={{ marginVertical: 24, marginHorizontal: 40 }}>
-              <H3>Duties on:</H3>
+              <Text style={[misc.catamaran, {textAlign: 'center', fontSize: 24}]}>Duties on:</Text>
               {(this.state.user && this.state.user.brgys) && this.state.user.brgys.map((e, key) => {
-                return (
-                  <Text key={key}>- {e}</Text>
-                )
+                return (<Text key={key}>- {e}</Text>)
               })}
+            </View>
+          )}
+          { this.state.reports.length > 0 && (
+            <View style={{marginVertical: 24}}>
+              <Text style={[misc.catamaran, {textAlign: 'center', fontSize: 24}]}>My Reports</Text>
+              <ReportList reports={this.state.reports}/>
             </View>
           )}
           {/* <View
