@@ -15,7 +15,7 @@ export default class Pending extends Component {
         super(props);
         this.state = {
             reportsByPending: [],
-            selectedReport: [],
+            selectedReport: {},
             isViewModalVisible: false,
             isConfirmModalVisible: false,
             isBogusModalVisible: false,

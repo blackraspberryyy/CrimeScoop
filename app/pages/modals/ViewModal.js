@@ -8,7 +8,7 @@ export default class ViewModal extends Component {
         super(props);
         this.state = {
             width: Dimensions.get('window').width,
-            report: [],
+            report: {},
             reportType: '',
             policeOfficer: [],
             brgyOfficer: [],
@@ -29,7 +29,6 @@ export default class ViewModal extends Component {
         this.setState({ brgyOfficer: report.brgyOfficer })
         this.setState({ reportedAt: report.reportedAt })
         this.setState({ reportType: report.crime.name })
-        console.log(report);
     }
 
     closeModal = () => {
