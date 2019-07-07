@@ -65,12 +65,6 @@ export default class ConfirmModal extends Component {
                 <Content contentContainerStyle={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.7)' }}>
                     <View style={{ backgroundColor: '#fff', marginHorizontal: 24, borderRadius: 10 }}>
                         <Header>
-                            <Left>
-                                <Icon
-                                    name='create'
-                                    style={{ color: '#fff' }}
-                                />
-                            </Left>
                             <Body>
                                 {
                                     this.props.report.data.status == 1 ?
@@ -80,11 +74,26 @@ export default class ConfirmModal extends Component {
                             </Body>
                         </Header>
                         <View style={{ padding: 10 }}>
-                            <ArrayLister
-                                title="Respondents"
-                                items={this.state.respondents}
-                                onChangeList={items => this.setState({ respondents: items })}
-                            />
+                            { this.state.report.status == 1 && (
+                                <ArrayLister
+                                    title="Respondents"
+                                    items={this.state.respondents}
+                                    onChangeList={items => this.setState({ respondents: items })}
+                                />
+                            )}
+
+                            { this.state.report.status != 1 && (
+                                <Form>
+                                    <Label>Summary of the Report</Label>
+                                    <Textarea 
+                                        rowSpan={5} 
+                                        bordered 
+                                        placeholder="Enter Summary of the report."
+                                        onChangeText={e => this.setState({summary: e})}
+                                    />
+                                </Form>
+
+                            )}
                         </View>
                         <View style={modalStyle.buttonView}>
                             <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
