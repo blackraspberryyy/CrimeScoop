@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { startCase } from 'lodash'
-import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, Thumbnail } from "native-base";
+import { Container, Content, Text, ListItem, Icon, Body, Left, View, H2, Thumbnail, H3 } from "native-base";
 import firebase from 'react-native-firebase'
 import navRoutes from '../../../navRoutes'
 import misc from '../../styles/misc'
@@ -24,10 +24,16 @@ export default class SideBar extends Component {
 
   }
 
-  signOutUser = async () => {
+  signOutUser = async (showMsg) => {
+    if(!showMsg){
+      showMsg = false
+    }
+
     try {
       await firebase.auth().signOut();
-      showToast("Successfully Logout", "success")
+      if(showMsg){
+        showToast("Successfully Logout", "success")
+      }
       this.props.navigation.navigate('Login');
     } catch (e) {
       console.log(e);
@@ -41,6 +47,7 @@ export default class SideBar extends Component {
         if (u && this._isMounted){
           this.setUser(u)
         }else{
+
           this.props.navigation.navigate('Loading')
         }
       })
@@ -56,8 +63,13 @@ export default class SideBar extends Component {
       }else{
         if(this._isMounted){
           let res = result[0].data
-          this.setState({user: res})
-          showToast('Welcome ' + startCase(res.fname + ' ' + res.lname) + '!', 'success')
+          if(res.status == 1){
+            this.setState({user: res})
+            showToast('Welcome ' + startCase(res.fname + ' ' + res.lname) + '!', 'success')
+          }else{
+            this.signOutUser(false)
+            showToast('Account is deleted by the Admin', 'danger')
+          }
         }
       }
     }).catch(err => {

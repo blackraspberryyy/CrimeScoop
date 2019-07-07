@@ -5,5 +5,6 @@ export default user = {
   token: '',
   uid: '',
   avatar: '',
+  status: 1,
   role: 'reporter'
 }

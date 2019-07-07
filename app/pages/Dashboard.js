@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { Container, Content, Button, H1, Item, Input } from 'native-base';
 import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions } from 'react-native';
+=======
+import { Container, Content, Button, H1, Item, Input, H3 } from 'native-base';
+import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions, RefreshControl } from 'react-native';
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geojson from 'react-native-geojson';
+import center from '@turf/center'
 import MainHeader from '../components/Main/Header';
 import misc from '../styles/misc';
 import latLngObj from '../constants/maps/latLng'
 import getCoordinates from '../tools/getCoordinates'
 import getBarangay from '../tools/getBarangay'
 import getDataWithProps from '../tools/firestore/getDataWithProps'
+import BrgyDropdown from '../components/Main/BrgyDropdown'
+import getBarangayByName from '../tools/getBarangayByName';
+
 
 export default class Dashboard extends Component {
   _isMounted = false;
@@ -18,6 +27,8 @@ export default class Dashboard extends Component {
     this.state = {
       user_id: '',
       location: null,
+      user: null,
+      role: 'reporter',
       initialRegion: {
         latitude: 14.5995,
         longitude: 120.9842,
@@ -34,13 +45,20 @@ export default class Dashboard extends Component {
       crimesInBrgy: 0,
       coordinates: latLngObj,
       barangay: 'Loading...',
+<<<<<<< HEAD
       geojson: { type: "featureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: [120.981857, 14.687221] }, properties: { ID_0: 177, ISO: "PHL", NAME_0: "Philippines", ID_1: 47, NAME_1: "Metropolitan Manila", ID_2: 966, NAME_2: "Valenzuela", ID_3: 25811, NAME_3: "Karuhatan", NL_NAME_3: "", VARNAME_3: "", TYPE_3: "Barangay", ENGTYPE_3: "Village", PROVINCE: "Metropolitan Manila", REGION: "Metropolitan Manila" } }] },
       marginBottom: 0
+=======
+      geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
+      marginBottom: 0,
+      refreshing: false
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
+    this.setRole()
     firebase.auth().onAuthStateChanged(user => {
       if (user && this._isMounted) {
         this.setState(() => ({ user_id: user.uid }))
@@ -50,11 +68,27 @@ export default class Dashboard extends Component {
     })
   }
 
+  setRole(){
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        uid = user.uid
+        getDataWithProps('Users', { uid: uid }).then(res => {
+          if(this._isMounted){
+            this.setState({role: res[0].data.role})
+            this.setState({user: res[0].data})
+          }
+        })
+      }
+    })
+  }
+
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-        this.setState({ location });
+        if(this._isMounted){
+          this.setState({ location });
+        }
       },
       error => Alert.alert(error.message),
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
@@ -63,6 +97,7 @@ export default class Dashboard extends Component {
 
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
+<<<<<<< HEAD
       getCoordinates().then(e => {
         let coords = {}
         coords['latitude'] = e.lat
@@ -71,8 +106,70 @@ export default class Dashboard extends Component {
           coordinates: {
             latitude: coords.latitude,
             longitude: coords.longitude
+=======
+      if(this._isMounted){
+        getCoordinates().then(e => {
+          let coords = {}
+          coords['latitude'] = e.lat
+          coords['longitude'] = e.lon
+          this.setState(prevState => ({
+            coordinates: {  
+              latitude: coords.latitude,
+              longitude: coords.longitude
+            }
+          }))
+          this.setState(prevState => ({
+            region: {
+              ...prevState.region,
+              latitude: coords.latitude,
+              longitude: coords.longitude
+            }
+          }))
+          getBarangay(e, true).then(res => {
+            this.setState({ geojson: res })
+            this.onRefresh()
+          })
+        })
+        this.setState({ marginBottom: 0 });
+      }
+    });
+  }
+
+  getGeoJson(brgyName){
+    getBarangayByName(brgyName).then(e => {
+      if(this._isMounted){
+        this.setState({geojson: e})
+        this.onRefresh()
+      }
+    }).catch(err => { console.log(err) })
+  }
+
+  onRefresh = () =>{
+    if(this._isMounted){
+      let e = this.state.geojson
+      this.setState({barangay: e.features[0].properties.NAME_3})
+      this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
+      getDataWithProps('Reports').then(element => {
+        let crimesInBrgy = 0
+        let reports = element.map(e => e.data)
+        reports.forEach(report => {
+          if(report.barangay == e.features[0].properties.NAME_3){
+            crimesInBrgy = crimesInBrgy + 1
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
           }
-        }))
+        })
+        this.setState({ crimesInBrgy: crimesInBrgy})
+        let centerPoint = center(e.features[0])
+        let coords = {
+          longitude: centerPoint.geometry.coordinates[0], 
+          latitude: centerPoint.geometry.coordinates[1]
+        }
+        let cameraObj = {
+          center: coords,
+          pitch: 5,
+          heading: 5
+        }
+        this.mapView.animateCamera(cameraObj, {duration: 5000})
         this.setState(prevState => ({
           region: {
             ...prevState.region,
@@ -80,6 +177,7 @@ export default class Dashboard extends Component {
             longitude: coords.longitude
           }
         }))
+<<<<<<< HEAD
 
         getBarangay(e, true).then(res => {
           let brgy = res.features[0].properties.NAME_3
@@ -97,10 +195,11 @@ export default class Dashboard extends Component {
             this.setState({ crimesInBrgy: crimesInBrgy })
           })
         })
+=======
+        this.setState({coordinates: coords})
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
       })
-
-      this.setState({ marginBottom: 0 });
-    });
+    }
   }
 
   render() {
@@ -117,6 +216,7 @@ export default class Dashboard extends Component {
           navigation={this.props.navigation}
           title="Dashboard"
         />
+<<<<<<< HEAD
         <Content>
           <View style={[misc.container, { paddingHorizontal: 16, paddingTop: 8, marginBottom: 16 }]}>
             <Text style={[misc.greyText, { marginBottom: 16 }]}>You're currently at Barangay</Text>
@@ -130,13 +230,61 @@ export default class Dashboard extends Component {
             <View style={{ flex: 1, flexDirection: 'row' }}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={[misc.centerAlign, { height: 48 }]}>Number of Crime Reports in this Barangay</Text>
+=======
+        <Content
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => {
+                this.onRefresh()
+                this.setState({refreshing: false})
+              }}
+            />
+          }
+        >
+          <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
+            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently looking at Barangay</Text>
+            { (this.state.role == 'reporter' || this.state.role == 'brgy_officer') && (
+              <Item rounded style={{marginBottom: 24}}>
+                <Input
+                  disabled
+                  value={this.state.barangay} 
+                  textAlign='center'
+                />
+              </Item>
+            )}
+
+            { (this.state.role == 'police_officer' || this.state.role == 'superadmin') && (
+              <View style={{marginBottom: 24}}>
+                <BrgyDropdown
+                  selected={this.state.barangay}
+                  onPick={e => this.getGeoJson(e)}
+                />
+              </View>
+            )}
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={[misc.centerAlign, {marginTop: 16}]}>Crime Rate in this Barangay</Text>
+              <H1 style={{fontSize: 32}}>{crimeRate}</H1>
+              <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', marginTop: 24}}>
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>No. Crime Reports in this Barangay</Text>
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
                 <H1>{this.state.crimesInBrgy}</H1>
                 <Text style={[misc.blackText, { fontSize: 16 }]}>Crime Reports</Text>
               </View>
+<<<<<<< HEAD
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={[misc.centerAlign, { height: 48 }]}>Crime Rate in this Barangay</Text>
                 <H1 style={{ fontSize: 32 }}>{crimeRate}</H1>
                 <Text style={[misc.blackText, { fontSize: 16 }]}> / per 100,000 people</Text>
+=======
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
+                <Text style={[misc.centerAlign, {height: 48}]}>Population in this Barangay</Text>
+                <H1 style={{fontSize: 32}}>{this.state.population == 0 ? 'N/A' : this.state.population}</H1>
+                <Text style={[misc.blackText, {fontSize: 16}]}> residents</Text>
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
               </View>
             </View>
           </View>
@@ -147,6 +295,7 @@ export default class Dashboard extends Component {
             region={this.state.region}
             initialRegion={this.state.initialRegion}
             onMapReady={this.onMapReady}
+            ref={e => this.mapView = e}
           >
             <Geojson
               geojson={this.state.geojson}
@@ -159,7 +308,22 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
+<<<<<<< HEAD
           <View
+=======
+          
+          { (this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
+              <View style={{marginVertical: 24, marginHorizontal: 40}}>
+                <H3>Duties on:</H3>
+                { (this.state.user && this.state.user.brgys) && this.state.user.brgys.map((e, key) => {
+                  return (
+                    <Text key={key}>- {e}</Text>
+                  )
+                })}
+              </View>
+            )}
+          {/* <View
+>>>>>>> 9d0fbf040a836508365ebe9e76d4e3cd9b2000df
             style={{
               marginTop: 32,
               borderBottomColor: '#515151',

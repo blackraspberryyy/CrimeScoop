@@ -86,7 +86,8 @@ export default class SignUp extends Component {
           role: 'reporter',
           token: this.state.token,
           phone: this.state.phone,
-          avatar: ''
+          avatar: '',
+          status: 1
         }
 
         Users
