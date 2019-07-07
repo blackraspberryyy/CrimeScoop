@@ -7,6 +7,7 @@ export default policeOfficer = {
   token: '',
   uid: '',
   avatar: '',
+  status: 1,
   role: 'brgy_officer',
   brgys: [brgyObj]
 }

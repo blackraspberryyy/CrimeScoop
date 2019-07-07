@@ -63,8 +63,10 @@ export default class Dashboard extends Component {
       if (user) {
         uid = user.uid
         getDataWithProps('Users', { uid: uid }).then(res => {
-          this.setState({role: res[0].data.role})
-          this.setState({user: res[0].data})
+          if(this._isMounted){
+            this.setState({role: res[0].data.role})
+            this.setState({user: res[0].data})
+          }
         })
       }
     })
@@ -74,7 +76,9 @@ export default class Dashboard extends Component {
     navigator.geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-        this.setState({ location });
+        if(this._isMounted){
+          this.setState({ location });
+        }
       },
       error => Alert.alert(error.message),
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
@@ -83,16 +87,68 @@ export default class Dashboard extends Component {
 
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
-      getCoordinates().then(e => {
-        let coords = {}
-        coords['latitude'] = e.lat
-        coords['longitude'] = e.lon
-        this.setState(prevState => ({
-          coordinates: {  
-            latitude: coords.latitude,
-            longitude: coords.longitude
+      if(this._isMounted){
+        getCoordinates().then(e => {
+          let coords = {}
+          coords['latitude'] = e.lat
+          coords['longitude'] = e.lon
+          this.setState(prevState => ({
+            coordinates: {  
+              latitude: coords.latitude,
+              longitude: coords.longitude
+            }
+          }))
+          this.setState(prevState => ({
+            region: {
+              ...prevState.region,
+              latitude: coords.latitude,
+              longitude: coords.longitude
+            }
+          }))
+          getBarangay(e, true).then(res => {
+            this.setState({ geojson: res })
+            this.onRefresh()
+          })
+        })
+        this.setState({ marginBottom: 0 });
+      }
+    });
+  }
+
+  getGeoJson(brgyName){
+    getBarangayByName(brgyName).then(e => {
+      if(this._isMounted){
+        this.setState({geojson: e})
+        this.onRefresh()
+      }
+    }).catch(err => { console.log(err) })
+  }
+
+  onRefresh = () =>{
+    if(this._isMounted){
+      let e = this.state.geojson
+      this.setState({barangay: e.features[0].properties.NAME_3})
+      this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
+      getDataWithProps('Reports').then(element => {
+        let crimesInBrgy = 0
+        let reports = element.map(e => e.data)
+        reports.forEach(report => {
+          if(report.barangay == e.features[0].properties.NAME_3){
+            crimesInBrgy = crimesInBrgy + 1
           }
-        }))
+        })
+        this.setState({ crimesInBrgy: crimesInBrgy})
+        let centerPoint = center(e.features[0])
+        let coords = {
+          longitude: centerPoint.geometry.coordinates[0], 
+          latitude: centerPoint.geometry.coordinates[1]
+        }
+        let cameraObj = {
+          center: coords,
+          pitch: 5,
+          heading: 5
+        }
+        this.mapView.animateCamera(cameraObj, {duration: 5000})
         this.setState(prevState => ({
           region: {
             ...prevState.region,
@@ -100,61 +156,12 @@ export default class Dashboard extends Component {
             longitude: coords.longitude
           }
         }))
-
-        getBarangay(e, true).then(res => {
-          this.setState({ geojson: res })
-          this.onRefresh()
-        })
+        this.setState({coordinates: coords})
       })
-
-      this.setState({ marginBottom: 0 });
-    });
-  }
-
-  getGeoJson(brgyName){
-    getBarangayByName(brgyName).then(e => {
-      this.setState({geojson: e})
-      this.onRefresh()
-    }).catch(err => { console.log(err) })
-  }
-
-  onRefresh = () =>{
-    let e = this.state.geojson
-    this.setState({barangay: e.features[0].properties.NAME_3})
-    this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
-    getDataWithProps('Reports').then(element => {
-      let crimesInBrgy = 0
-      let reports = element.map(e => e.data)
-      reports.forEach(report => {
-        if(report.barangay == e.features[0].properties.NAME_3){
-          crimesInBrgy = crimesInBrgy + 1
-        }
-      })
-      this.setState({ crimesInBrgy: crimesInBrgy})
-      let centerPoint = center(e.features[0])
-      let coords = {
-        longitude: centerPoint.geometry.coordinates[0], 
-        latitude: centerPoint.geometry.coordinates[1]
-      }
-      let cameraObj = {
-        center: coords,
-        pitch: 5,
-        heading: 5
-      }
-      this.mapView.animateCamera(cameraObj, {duration: 5000})
-      this.setState(prevState => ({
-        region: {
-          ...prevState.region,
-          latitude: coords.latitude,
-          longitude: coords.longitude
-        }
-      }))
-      this.setState({coordinates: coords})
-    })
+    }
   }
 
   render() {
-    console.log(this.state.user);
     let crimeRate = 0
     if(this.state.population == 0){
       crimeRate = 'N/A'
