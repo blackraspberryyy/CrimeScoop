@@ -21,7 +21,7 @@ export default class ViewModal extends Component {
 
     }
 
-    componentDidMount = () => { 
+    componentDidMount = () => {
         const report = this.props.report;
         this.setState({ report: report })
         this.setState({ reportedBy: report.reportedBy })
@@ -102,7 +102,37 @@ export default class ViewModal extends Component {
                                     <Text style={modalStyle.textModal}>{this.state.policeOfficer ? this.state.policeOfficer.fname : ''} {this.state.policeOfficer ? this.state.policeOfficer.lname : ''}</Text>
                                 </Col>
                             </Row>
+                            {
+                                (report.status == 2 || report.status == 3) && (
+                                    <Row>
+                                        <Col style={modalStyle.col}>
+                                            <Text style={modalStyle.textModal}>Respondents:</Text>
+                                        </Col>
+                                        <Col style={modalStyle.col}>
+                                            {
+                                                report.respondents.map((respondent, key) => {
+                                                    return (
+                                                        <Text style={modalStyle.textModal} key={key}>{respondent}</Text>
+                                                    )
+                                                })
+                                            }
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+                            {
+                                report.status == 3 && (
+                                    <Row>
+                                        <Col style={{ paddingLeft: 20 }}>
+                                            <Text style={[modalStyle.text, { paddingLeft: 20 }]}>Summary:</Text>
+                                            <Text style={[modalStyle.text, { paddingLeft: 30 }]}>{report.summary}</Text>
+                                        </Col>
+                                    </Row>
+
+                                )
+                            }
                         </Grid>
+
                     </Content>
                     <View style={modalStyle.buttonView}>
                         <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
