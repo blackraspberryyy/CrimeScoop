@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import modalStyle from '../../styles/modal';
 import moveReport from '../../tools/reports/moveReport';
 import showToast from '../../tools/showToast';
+import ArrayLister from '../../components/Main/ArrayLister'
 
 export default class ConfirmModal extends Component {
     constructor(props) {
@@ -13,8 +14,6 @@ export default class ConfirmModal extends Component {
             width: Dimensions.get('window').width,
             report: {},
             respondents: [],
-            holder: '',
-            inputRespondent: ['input-0'],
             summary: '',
         };
         Dimensions.addEventListener('change', (e) => {
@@ -34,7 +33,6 @@ export default class ConfirmModal extends Component {
 
     changeStatusCrime() {
         const report = this.state.report;
-        this.state.respondents.push(this.state.holder.toString());
         let respondents = {
             respondents: this.state.respondents
         }
@@ -61,13 +59,6 @@ export default class ConfirmModal extends Component {
                 })
         }
     }
-    addInputRespondent = () => {
-        let newInput = `input-${this.state.inputRespondent.length}`;
-        this.setState(prevState => ({ inputRespondent: prevState.inputRespondent.concat([newInput]) }));
-        this.state.respondents.push(this.state.holder.toString());
-        this.setState({ holder: '' })
-    }
-
     render() {
         return (
             <Container style={{ backgroundColor: 'transparent' }}>
@@ -89,41 +80,12 @@ export default class ConfirmModal extends Component {
                             </Body>
                         </Header>
                         <View style={{ padding: 10 }}>
-                            {this.props.report.data.status == 1 && (
-                                <Label style={{ fontSize: 16 }}>Click to add respondent</Label>
-                            )}
-                            {this.props.report.data.status == 1 && (
-
-                                <Icon name='add' style={{ color: 'green', paddingTop: 10 }} onPress={() => this.addInputRespondent()} />
-                            )}
-                            {this.props.report.data.status == 1 ?
-                                this.state.inputRespondent.map((respondent, key) => {
-                                    return (
-                                        <View style={{ flexDirection: 'row' }} key={key}>
-                                            <Item
-                                                rounded
-                                                style={[styles.input, styles.colInput, { marginRight: 8 }]}
-                                            >
-                                                <Input
-                                                    autoFocus={true}
-                                                    style={styles.inputFontSize}
-                                                    placeholder='Respondent Name'
-                                                    onChangeText={respondents => { this.setState({ holder: respondents }) }}
-                                                />
-                                            </Item>
-                                        </View>
-                                    )
-                                })
-                                :
-                                <Textarea style={{ width: 330, height: 120 }}
-                                    rowSpan={3} bordered
-                                    placeholder="Enter the summary of the crime"
-                                    onChangeText={summary => this.setState({ summary })}
-                                />
-                            }
-
+                            <ArrayLister
+                                title="Respondents"
+                                items={this.state.respondents}
+                                onChangeList={items => this.setState({ respondents: items })}
+                            />
                         </View>
-
                         <View style={modalStyle.buttonView}>
                             <TouchableHighlight onPress={() => this.closeModal()} style={[modalStyle.touchableHighlight, { borderBottomLeftRadius: 10, borderRightColor: 'grey', borderRightWidth: 1 }]} underlayColor={'#f1f1f1'}>
                                 <Text style={[modalStyle.textModal, { color: 'blue' }]}>No</Text>
