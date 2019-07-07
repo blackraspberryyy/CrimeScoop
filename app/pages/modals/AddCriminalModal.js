@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { isArray, isObject } from 'lodash'
 import { Modal, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Thumbnail, Content, Form, Item, Input, Text, View, Header, Body, Left, Right, Title, Button, Icon, Container } from 'native-base';
 import firebase from 'react-native-firebase';
@@ -21,14 +22,16 @@ export default class AddCriminalModal extends Component {
         };
     }
 
-    componentDidMount(){
-        if(this.props.criminal){
-            this.setState({criminal: this.props.criminal})
-            this.setState({fname: this.props.criminal.data.fname})
-            this.setState({lname: this.props.criminal.data.lname})
-            this.setState({crimes: this.props.criminal.data.crimes})
-            this.setState({avatar: this.props.criminal.data.upload})
-            if(this.props.criminal.data.crimes.length > 0){
+    componentDidMount() {
+
+        console.log(this.props.criminal);
+        if ((isObject(this.props.criminal) && this.props.criminal) || (isArray(this.props.criminal) && this.props.criminal.length > 0)) {
+            this.setState({ criminal: this.props.criminal })
+            this.setState({ fname: this.props.criminal.data.fname })
+            this.setState({ lname: this.props.criminal.data.lname })
+            this.setState({ crimes: this.props.criminal.data.crimes })
+            this.setState({ avatar: this.props.criminal.data.upload })
+            if (this.props.criminal.data.crimes.length > 0) {
                 let newInput = `input-${this.state.inputCrime.length}`;
                 this.setState(prevState => ({ inputCrime: prevState.inputCrime.concat([newInput]) }));
                 console.log(this.state.inputCrime)
@@ -67,9 +70,9 @@ export default class AddCriminalModal extends Component {
         this.setState({ lname: '' })
         this.setState({ avatar: '' })
         this.setState({ email: '' })
-        if(this.props.mode == 'edit'){
+        if (this.props.mode == 'edit') {
             this.props.changeEditCriminalVisibility(false);
-        }else{
+        } else {
             this.props.changeAddCriminalVisibility(false)
         }
     }
@@ -78,7 +81,7 @@ export default class AddCriminalModal extends Component {
         let newInput = `input-${this.state.inputCrime.length}`;
         this.setState(prevState => ({ inputCrime: prevState.inputCrime.concat([newInput]) }));
         this.state.crimes.push(this.state.holder.toString());
-        this.setState({holder: ''})
+        this.setState({ holder: '' })
     }
 
     addNotoriousCriminal = () => {
@@ -92,9 +95,9 @@ export default class AddCriminalModal extends Component {
         }
         if (this.state.avatar == '') {
             criminal['upload'] = ''
-            if(this.props.mode == 'edit'){
+            if (this.props.mode == 'edit') {
                 firebase.firestore().collection('NotoriousCriminals').doc(this.state.criminal.id).update(criminal)
-            }else{
+            } else {
                 firebase.firestore().collection('NotoriousCriminals').add(criminal)
             }
         } else {
@@ -104,18 +107,18 @@ export default class AddCriminalModal extends Component {
                     // criminal.avatar = e
                     console.log(e);
                     criminal['upload'] = e
-                    if(this.props.mode == 'edit'){
+                    if (this.props.mode == 'edit') {
                         firebase.firestore().collection('NotoriousCriminals').doc(this.state.criminal.id).update(criminal)
-                    }else{
+                    } else {
                         firebase.firestore().collection('NotoriousCriminals').add(criminal)
                     }
                 })
         }
 
         this.props.onReport()
-        if(this.props.mode == 'edit'){
+        if (this.props.mode == 'edit') {
             this.props.changeEditCriminalVisibility(false);
-        }else{
+        } else {
             this.props.changeAddCriminalVisibility(false)
         }
     }
@@ -136,13 +139,13 @@ export default class AddCriminalModal extends Component {
             s.lname
 
         let mode = 'Add'
-        if (this.props.mode == 'edit'){
+        if (this.props.mode == 'edit') {
             mode = 'Edit'
-        }else{
+        } else {
             mode = 'Add'
         }
 
-        renderCrimes = this.state.inputCrime.map( (crime, key) => {
+        renderCrimes = this.state.inputCrime.map((crime, key) => {
             return (
                 <View style={{ flexDirection: 'row' }} key={key}>
                     <Item
@@ -160,6 +163,7 @@ export default class AddCriminalModal extends Component {
                 </View>
             )
         })
+        console.log(this.props.mode);
 
         return (
             <Container>
@@ -173,7 +177,7 @@ export default class AddCriminalModal extends Component {
                                 />
                             </Left>
                             <Body>
-                                <Title>{ mode } Criminal</Title>
+                                <Title>{mode} Criminal</Title>
                             </Body>
                             <Right style={{ border: 1 }} />
                         </Header>
@@ -196,11 +200,23 @@ export default class AddCriminalModal extends Component {
                                         value={this.state.fname}
                                     />
                                 </Item>
+                                <Item
+                                    rounded
+                                    style={[styles.input, styles.colInput, { marginRight: 8 }]}
+                                >
+                                    <Input
+                                        autoFocus={true}
+                                        style={styles.inputFontSize}
+                                        placeholder='Lastname'
+                                        onChangeText={lname => { this.setState({ lname }) }}
+                                        value={this.state.lname}
+                                    />
+                                </Item>
                             </View>
                             <Icon name='add' style={{ color: 'green', paddingTop: 10 }} onPress={() => this.addInputCrime()} />
                             <Text>Click to add crime</Text>
-                            { renderCrimes }
-                            { this.props.mode == 'edit' && (
+                            {renderCrimes}
+                            {this.props.mode == 'edit' && (
                                 <View style={{ flexDirection: 'row' }}>
                                     <Item
                                         rounded

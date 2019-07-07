@@ -50,6 +50,7 @@ export default class NotoriousCriminals extends Component {
     }
 
     getSelectedCriminal(data) {
+        console.log(data)
         this.setState({ selectedCriminal: data })
     }
 

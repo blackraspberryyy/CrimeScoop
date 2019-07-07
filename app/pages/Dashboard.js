@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, Button, H1, Item, Input } from 'native-base';
-import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions  } from 'react-native';
+import { View, Alert, Text, StyleSheet, PermissionsAndroid, Dimensions } from 'react-native';
 import firebase from 'react-native-firebase';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Geojson from 'react-native-geojson';
@@ -34,7 +34,7 @@ export default class Dashboard extends Component {
       crimesInBrgy: 0,
       coordinates: latLngObj,
       barangay: 'Loading...',
-      geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
+      geojson: { type: "featureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: [120.981857, 14.687221] }, properties: { ID_0: 177, ISO: "PHL", NAME_0: "Philippines", ID_1: 47, NAME_1: "Metropolitan Manila", ID_2: 966, NAME_2: "Valenzuela", ID_3: 25811, NAME_3: "Karuhatan", NL_NAME_3: "", VARNAME_3: "", TYPE_3: "Barangay", ENGTYPE_3: "Village", PROVINCE: "Metropolitan Manila", REGION: "Metropolitan Manila" } }] },
       marginBottom: 0
     };
   }
@@ -61,7 +61,6 @@ export default class Dashboard extends Component {
     );
   };
 
-
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
       getCoordinates().then(e => {
@@ -69,7 +68,7 @@ export default class Dashboard extends Component {
         coords['latitude'] = e.lat
         coords['longitude'] = e.lon
         this.setState(prevState => ({
-          coordinates: {  
+          coordinates: {
             latitude: coords.latitude,
             longitude: coords.longitude
           }
@@ -91,11 +90,11 @@ export default class Dashboard extends Component {
             let crimesInBrgy = 0
             let reports = e.map(e => e.data)
             reports.forEach(report => {
-              if(report.barangay == brgy){
+              if (report.barangay == brgy) {
                 crimesInBrgy = crimesInBrgy + 1
               }
             })
-            this.setState({ crimesInBrgy: crimesInBrgy})
+            this.setState({ crimesInBrgy: crimesInBrgy })
           })
         })
       })
@@ -106,10 +105,10 @@ export default class Dashboard extends Component {
 
   render() {
     let crimeRate = 0
-    if(this.state.population == 0){
+    if (this.state.population == 0) {
       crimeRate = 'N/A'
-    }else{
-      crimeRate = ( this.state.crimesInBrgy / this.state.population ) * 100000
+    } else {
+      crimeRate = (this.state.crimesInBrgy / this.state.population) * 100000
       crimeRate = Math.round(crimeRate * 100) / 100
     }
     return (
@@ -119,37 +118,37 @@ export default class Dashboard extends Component {
           title="Dashboard"
         />
         <Content>
-          <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
-            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently at Barangay</Text>
-            <Item rounded style={{marginBottom: 24}}>
+          <View style={[misc.container, { paddingHorizontal: 16, paddingTop: 8, marginBottom: 16 }]}>
+            <Text style={[misc.greyText, { marginBottom: 16 }]}>You're currently at Barangay</Text>
+            <Item rounded style={{ marginBottom: 24 }}>
               <Input
                 disabled
-                value={this.state.barangay} 
+                value={this.state.barangay}
                 textAlign='center'
               />
             </Item>
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>Number of Crime Reports in this Barangay</Text>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={[misc.centerAlign, { height: 48 }]}>Number of Crime Reports in this Barangay</Text>
                 <H1>{this.state.crimesInBrgy}</H1>
-                <Text style={[misc.blackText, {fontSize: 16}]}>Crime Reports</Text>
+                <Text style={[misc.blackText, { fontSize: 16 }]}>Crime Reports</Text>
               </View>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>Crime Rate in this Barangay</Text>
-                <H1 style={{fontSize: 32}}>{crimeRate}</H1>
-                <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={[misc.centerAlign, { height: 48 }]}>Crime Rate in this Barangay</Text>
+                <H1 style={{ fontSize: 32 }}>{crimeRate}</H1>
+                <Text style={[misc.blackText, { fontSize: 16 }]}> / per 100,000 people</Text>
               </View>
             </View>
           </View>
           <MapView
             rotateEnabled={false}
             provider={PROVIDER_GOOGLE}
-            style={[styles.map, {marginBottom: this.state.marginBottom}]}
+            style={[styles.map, { marginBottom: this.state.marginBottom }]}
             region={this.state.region}
             initialRegion={this.state.initialRegion}
             onMapReady={this.onMapReady}
           >
-            <Geojson 
+            <Geojson
               geojson={this.state.geojson}
               strokeColor='#4169E1'
               strokeWidth={2}
@@ -160,23 +159,23 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
-          {/* <View
+          <View
             style={{
-              marginTop:32,
+              marginTop: 32,
               borderBottomColor: '#515151',
               marginHorizontal: 96,
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-          <View style={{ marginBottom: 32, alignItems: 'center' }}>
-            <H1 style={[misc.catamaran, {paddingTop: 32, fontSize: 32}]}>Are you in danger?</H1>
+          {/* <View style={{ marginBottom: 32, alignItems: 'center' }}>
+            <H1 style={[misc.catamaran, { paddingTop: 32, fontSize: 32 }]}>Are you in danger?</H1>
             <View style={{ marginTop: 16 }}>
-              <Button 
+              <Button
                 large
                 primary
                 style={styles.reportButton}
               >
-                <Text style={[ misc.reportType, misc.catamaran ]}>Report</Text>
+                <Text style={[misc.reportType, misc.catamaran]}>Report</Text>
               </Button>
             </View>
           </View> */}
@@ -197,9 +196,9 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     alignSelf: 'stretch'
   },
-  reportButton:{
-    width: 150, 
-    justifyContent: 'center', 
+  reportButton: {
+    width: 150,
+    justifyContent: 'center',
     paddingBottom: 16
   },
   dashboardHeader: {
