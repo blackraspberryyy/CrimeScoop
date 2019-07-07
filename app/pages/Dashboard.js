@@ -188,7 +188,7 @@ export default class Dashboard extends Component {
       <Container>
         <MainHeader
           navigation={this.props.navigation}
-          title="Dashboard"
+          title="Barangay Reports"
         />
         <Content
           refreshControl={
