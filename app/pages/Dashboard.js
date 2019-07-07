@@ -11,8 +11,10 @@ import latLngObj from '../constants/maps/latLng'
 import getCoordinates from '../tools/getCoordinates'
 import getBarangay from '../tools/getBarangay'
 import getDataWithProps from '../tools/firestore/getDataWithProps'
+import getData from '../tools/firestore/getData'
 import BrgyDropdown from '../components/Main/BrgyDropdown'
 import getBarangayByName from '../tools/getBarangayByName';
+import { thisExpression } from '@babel/types';
 
 
 export default class Dashboard extends Component {
@@ -40,9 +42,10 @@ export default class Dashboard extends Component {
       crimesInBrgy: 0,
       coordinates: latLngObj,
       barangay: 'Loading...',
-      geojson: {type:"featureCollection",features:[{type:"Feature", geometry:{type:"Point",coordinates:[120.981857,14.687221]},properties:{ID_0:177,ISO:"PHL",NAME_0:"Philippines",ID_1:47,NAME_1:"Metropolitan Manila",ID_2:966,NAME_2:"Valenzuela",ID_3:25811,NAME_3:"Karuhatan",NL_NAME_3:"",VARNAME_3:"",TYPE_3:"Barangay",ENGTYPE_3:"Village",PROVINCE:"Metropolitan Manila",REGION:"Metropolitan Manila"}}]},
+      geojson: { type: "featureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: [120.981857, 14.687221] }, properties: { ID_0: 177, ISO: "PHL", NAME_0: "Philippines", ID_1: 47, NAME_1: "Metropolitan Manila", ID_2: 966, NAME_2: "Valenzuela", ID_3: 25811, NAME_3: "Karuhatan", NL_NAME_3: "", VARNAME_3: "", TYPE_3: "Barangay", ENGTYPE_3: "Village", PROVINCE: "Metropolitan Manila", REGION: "Metropolitan Manila" } }] },
       marginBottom: 0,
-      refreshing: false
+      refreshing: false,
+      reports: [],
     };
   }
 
@@ -56,16 +59,17 @@ export default class Dashboard extends Component {
         this.props.navigation.navigate('Loading')
       }
     })
+    this.getReports();
   }
 
-  setRole(){
+  setRole() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         uid = user.uid
         getDataWithProps('Users', { uid: uid }).then(res => {
-          if(this._isMounted){
-            this.setState({role: res[0].data.role})
-            this.setState({user: res[0].data})
+          if (this._isMounted) {
+            this.setState({ role: res[0].data.role })
+            this.setState({ user: res[0].data })
           }
         })
       }
@@ -76,7 +80,7 @@ export default class Dashboard extends Component {
     navigator.geolocation.getCurrentPosition(
       position => {
         const location = JSON.stringify(position);
-        if(this._isMounted){
+        if (this._isMounted) {
           this.setState({ location });
         }
       },
@@ -87,13 +91,13 @@ export default class Dashboard extends Component {
 
   onMapReady = () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(granted => {
-      if(this._isMounted){
+      if (this._isMounted) {
         getCoordinates().then(e => {
           let coords = {}
           coords['latitude'] = e.lat
           coords['longitude'] = e.lon
           this.setState(prevState => ({
-            coordinates: {  
+            coordinates: {
               latitude: coords.latitude,
               longitude: coords.longitude
             }
@@ -115,32 +119,32 @@ export default class Dashboard extends Component {
     });
   }
 
-  getGeoJson(brgyName){
+  getGeoJson(brgyName) {
     getBarangayByName(brgyName).then(e => {
-      if(this._isMounted){
-        this.setState({geojson: e})
+      if (this._isMounted) {
+        this.setState({ geojson: e })
         this.onRefresh()
       }
     }).catch(err => { console.log(err) })
   }
 
-  onRefresh = () =>{
-    if(this._isMounted){
+  onRefresh = () => {
+    if (this._isMounted) {
       let e = this.state.geojson
-      this.setState({barangay: e.features[0].properties.NAME_3})
+      this.setState({ barangay: e.features[0].properties.NAME_3 })
       this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
       getDataWithProps('Reports').then(element => {
         let crimesInBrgy = 0
         let reports = element.map(e => e.data)
         reports.forEach(report => {
-          if(report.barangay == e.features[0].properties.NAME_3){
+          if (report.barangay == e.features[0].properties.NAME_3) {
             crimesInBrgy = crimesInBrgy + 1
           }
         })
-        this.setState({ crimesInBrgy: crimesInBrgy})
+        this.setState({ crimesInBrgy: crimesInBrgy })
         let centerPoint = center(e.features[0])
         let coords = {
-          longitude: centerPoint.geometry.coordinates[0], 
+          longitude: centerPoint.geometry.coordinates[0],
           latitude: centerPoint.geometry.coordinates[1]
         }
         let cameraObj = {
@@ -148,7 +152,7 @@ export default class Dashboard extends Component {
           pitch: 5,
           heading: 5
         }
-        this.mapView.animateCamera(cameraObj, {duration: 5000})
+        this.mapView.animateCamera(cameraObj, { duration: 5000 })
         this.setState(prevState => ({
           region: {
             ...prevState.region,
@@ -156,9 +160,20 @@ export default class Dashboard extends Component {
             longitude: coords.longitude
           }
         }))
-        this.setState({coordinates: coords})
+        this.setState({ coordinates: coords })
       })
     }
+  }
+  getReports = () => {
+    getData('Reports').then(res => {
+      let reports = []
+      res.forEach(report => {
+        if (report.data.reportedBy.uid == this.state.user_id) {
+          reports.push(report)
+        }
+      })
+      this.setState({ reports: reports })
+    })
   }
 
   render() {
@@ -181,46 +196,46 @@ export default class Dashboard extends Component {
               refreshing={this.state.refreshing}
               onRefresh={() => {
                 this.onRefresh()
-                this.setState({refreshing: false})
+                this.setState({ refreshing: false })
               }}
             />
           }
         >
-          <View style={[misc.container, {paddingHorizontal: 16, paddingTop: 8, marginBottom: 16}]}>
-            <Text style={[misc.greyText, {marginBottom: 16}]}>You're currently looking at Barangay</Text>
-            { (this.state.role == 'reporter' || this.state.role == 'brgy_officer') && (
-              <Item rounded style={{marginBottom: 24}}>
+          <View style={[misc.container, { paddingHorizontal: 16, paddingTop: 8, marginBottom: 16 }]}>
+            <Text style={[misc.greyText, { marginBottom: 16 }]}>You're currently looking at Barangay</Text>
+            {(this.state.role == 'reporter' || this.state.role == 'brgy_officer') && (
+              <Item rounded style={{ marginBottom: 24 }}>
                 <Input
                   disabled
-                  value={this.state.barangay} 
+                  value={this.state.barangay}
                   textAlign='center'
                 />
               </Item>
             )}
 
-            { (this.state.role == 'police_officer' || this.state.role == 'superadmin') && (
-              <View style={{marginBottom: 24}}>
+            {(this.state.role == 'police_officer' || this.state.role == 'superadmin') && (
+              <View style={{ marginBottom: 24 }}>
                 <BrgyDropdown
                   selected={this.state.barangay}
                   onPick={e => this.getGeoJson(e)}
                 />
               </View>
             )}
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={[misc.centerAlign, {marginTop: 16}]}>Crime Rate in this Barangay</Text>
-              <H1 style={{fontSize: 32}}>{crimeRate}</H1>
-              <Text style={[misc.blackText, {fontSize: 16}]}> / per 100,000 people</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={[misc.centerAlign, { marginTop: 16 }]}>Crime Rate in this Barangay</Text>
+              <H1 style={{ fontSize: 32 }}>{crimeRate}</H1>
+              <Text style={[misc.blackText, { fontSize: 16 }]}> / per 100,000 people</Text>
             </View>
-            <View style={{flex: 1, flexDirection: 'row', marginTop: 24}}>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>No. Crime Reports in this Barangay</Text>
+            <View style={{ flex: 1, flexDirection: 'row', marginTop: 24 }}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 }}>
+                <Text style={[misc.centerAlign, { height: 48 }]}>No. Crime Reports in this Barangay</Text>
                 <H1>{this.state.crimesInBrgy}</H1>
                 <Text style={[misc.blackText, { fontSize: 16 }]}>Crime Reports</Text>
               </View>
-              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16}}>
-                <Text style={[misc.centerAlign, {height: 48}]}>Population in this Barangay</Text>
-                <H1 style={{fontSize: 32}}>{this.state.population == 0 ? 'N/A' : this.state.population}</H1>
-                <Text style={[misc.blackText, {fontSize: 16}]}> residents</Text>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 }}>
+                <Text style={[misc.centerAlign, { height: 48 }]}>Population in this Barangay</Text>
+                <H1 style={{ fontSize: 32 }}>{this.state.population == 0 ? 'N/A' : this.state.population}</H1>
+                <Text style={[misc.blackText, { fontSize: 16 }]}> residents</Text>
               </View>
             </View>
           </View>
@@ -244,17 +259,17 @@ export default class Dashboard extends Component {
               title={this.state.barangay}
             />
           </MapView>
-          
-          { (this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
-              <View style={{marginVertical: 24, marginHorizontal: 40}}>
-                <H3>Duties on:</H3>
-                { (this.state.user && this.state.user.brgys) && this.state.user.brgys.map((e, key) => {
-                  return (
-                    <Text key={key}>- {e}</Text>
-                  )
-                })}
-              </View>
-            )}
+
+          {(this.state.role == 'brgy_officer' || this.state.role == 'police_officer') && (
+            <View style={{ marginVertical: 24, marginHorizontal: 40 }}>
+              <H3>Duties on:</H3>
+              {(this.state.user && this.state.user.brgys) && this.state.user.brgys.map((e, key) => {
+                return (
+                  <Text key={key}>- {e}</Text>
+                )
+              })}
+            </View>
+          )}
           {/* <View
             style={{
               marginTop: 32,
@@ -275,7 +290,22 @@ export default class Dashboard extends Component {
               </Button>
             </View>
           </View> */}
-
+          
+          {/* <Text>Reports</Text>
+          {
+            this.state.reports.map((report, key) => {
+              return (
+                <View key={key}>
+                  <Text>Reported By:</Text>
+                  <Text>{report.data.reportedBy.fname} {report.data.reportedBy.lname}</Text>
+                  <Text>Crime Type:</Text>
+                  <Text>{report.data.crime.name}</Text>
+                  <Text>Details:</Text>
+                  <Text>{report.data.details}</Text>
+                </View>
+              )
+            })
+          } */}
         </Content>
       </Container>
     );

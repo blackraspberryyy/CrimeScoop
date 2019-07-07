@@ -103,7 +103,7 @@ export default class ViewModal extends Component {
                                 </Col>
                             </Row>
                             {
-                                (report.status == 2 || report.status == 3) && (
+                                ((report.status == 2 && report.respondents) || (report.status == 3 && report.respondents)) && (
                                     <Row>
                                         <Col style={modalStyle.col}>
                                             <Text style={modalStyle.textModal}>Respondents:</Text>
@@ -121,7 +121,7 @@ export default class ViewModal extends Component {
                                 )
                             }
                             {
-                                report.status == 3 && (
+                                (report.status == 3 && report.summary) && (
                                     <Row>
                                         <Col style={{ paddingLeft: 20 }}>
                                             <Text style={[modalStyle.text, { paddingLeft: 20 }]}>Summary:</Text>
