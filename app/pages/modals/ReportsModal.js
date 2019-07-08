@@ -140,7 +140,7 @@ export default class ReportsModal extends Component {
               {summary != '' && (
                 <View style={{paddingVertical: 8, borderBottomColor: '#ccc', borderBottomWidth: StyleSheet.hairlineWidth}}>
                   <Text style={{paddingHorizontal: 32}}>Summary</Text>
-                  <Text style={{paddingLpaddingHorizontaleft: 32, color: '#747474'}}>{summary}</Text>
+                  <Text style={{paddingHorizontal: 32, color: '#747474'}}>{summary}</Text>
                 </View>
               )}
               {respondents.length > 0 && (

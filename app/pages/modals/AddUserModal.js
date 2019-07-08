@@ -100,7 +100,8 @@ export default class AddUserModal extends Component {
         role: this.props.role,
         token: '',
         phone: this.state.phone,
-        avatar: this.state.avatar
+        avatar: this.state.avatar,
+        status: 1
       }
 
       if(this.props.role == 'brgy_officer' || this.props.role == 'police_officer'){

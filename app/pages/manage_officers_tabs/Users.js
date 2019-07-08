@@ -85,6 +85,9 @@ export default class Reporters extends Component {
       let defaultAvatar = "../../assets/CrimeScoop/default_avatar.jpg"
       
       content = this.state.users.map((user, key) => {
+        console.log(user.data.uid)
+        console.log(this.state.currentUid)
+        console.log(this.state.currentUid != user.data.uid)
         let avatar = <Thumbnail source={ require(defaultAvatar) }/>
         if(user.data.avatar == ''){
           avatar = avatar

@@ -31,6 +31,16 @@ export default class AddCriminalModal extends Component {
       this.setState({ avatar: this.props.criminal.data.upload })
     }
   }
+  
+  componentWillReceiveProps(nextProps){
+    if (nextProps.criminal && nextProps.criminal.data && nextProps.mode == 'edit') {
+      this.setState({ criminal: nextProps.criminal })
+      this.setState({ fname: nextProps.criminal.data.fname })
+      this.setState({ lname: nextProps.criminal.data.lname })
+      this.setState({ crimes: nextProps.criminal.data.crimes })
+      this.setState({ avatar: nextProps.criminal.data.upload })
+    }
+  }
 
   selectPhotoTapped = () => {
     const options = {
@@ -118,10 +128,25 @@ export default class AddCriminalModal extends Component {
     let defaultAvatar = "../../assets/user-placeholder.jpg"
     let avatar = <Thumbnail large source={require(defaultAvatar)} />
 
-    if (this.state.avatar != '') {
-      avatar = <Thumbnail large source={{uri: this.state.avatar}} />
-    } else {
-      avatar = avatar //use default
+    if(this.props.mode == 'edit'){
+      if(this.state.criminal.data){
+        if(this.state.criminal.data.upload != ''){
+          if (this.state.avatar != '') {
+            avatar = <Thumbnail large source={this.state.avatar} />
+          } else {
+            avatar = <Thumbnail large source={{uri: this.state.criminal.data.upload}} />
+          }
+        }else{
+          if (this.state.avatar != '') {
+            avatar = <Thumbnail large source={this.state.avatar} />
+          } else {
+            avatar = avatar
+          }
+        }
+      }
+    }else{
+      console.log(6)
+      avatar = avatar
     }
 
     const s = this.state

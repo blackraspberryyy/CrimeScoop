@@ -116,6 +116,7 @@ export default class Dashboard extends Component {
 
   onRefresh = () => {
     if (this._isMounted) {
+      this.getReports()
       let e = this.state.geojson
       this.setState({ barangay: e.features[0].properties.NAME_3 })
       this.setState({ population: e.features[0].properties.POPULATION ? e.features[0].properties.POPULATION : 0 })
