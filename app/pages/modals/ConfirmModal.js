@@ -74,7 +74,7 @@ export default class ConfirmModal extends Component {
                             </Body>
                         </Header>
                         <View style={{ padding: 10 }}>
-                            { this.state.report.status == 1 && (
+                            { this.props.report.data.status == 1 && (
                                 <ArrayLister
                                     title="Respondents"
                                     items={this.state.respondents}
@@ -82,7 +82,7 @@ export default class ConfirmModal extends Component {
                                 />
                             )}
 
-                            { this.state.report.status != 1 && (
+                            { this.props.report.data.status != 1 && (
                                 <Form>
                                     <Label>Summary of the Report</Label>
                                     <Textarea 
