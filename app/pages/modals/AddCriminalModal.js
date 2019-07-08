@@ -144,10 +144,14 @@ export default class AddCriminalModal extends Component {
           }
         }
       }
-    }else{
-      console.log(6)
-      avatar = avatar
+    }else{ // if add
+      if (this.state.avatar != '') {
+        avatar = <Thumbnail large source={this.state.avatar} />
+      } else {
+        avatar = avatar
+      }
     }
+    
 
     const s = this.state
     let form =
