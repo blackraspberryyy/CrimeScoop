@@ -1,6 +1,8 @@
 # CrimeScoop
 Crime Reporting Mobile Application using React Native and Firebase
 
+![CrimeScoop Welcome Page](https://imgur.com/bC8yNtm)
+
 ## Installation
 1. Clone the repository
 ```
