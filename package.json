@@ -13,7 +13,7 @@
     "@turf/center": "^6.0.1",
     "firebase-tools": "^7.0.1",
     "geojson-geometries-lookup": "^0.3.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.21",
     "native-base": "^2.12.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
