@@ -27,7 +27,7 @@
     "react-native-multiple-select": "^0.5.2",
     "react-navigation": "^3.11.0",
     "react-navigation-slide-from-right-transition": "^1.0.4",
-    "validator": "^11.0.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
